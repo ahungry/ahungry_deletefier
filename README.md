@@ -1,5 +1,12 @@
 # Ahungry Deletefier
 
+NOTE: Alpha quality, I need to do some play throughs with this mod!
+
+There is a chance you'll have to CLUAConsole in some missing
+quest items that this may have obliterated.
+
+# Intro
+
 BG:EE/BG2:EE/EET mod - Removes many items from
 creatures/stores/areas - basically tries to 'downgrade' any special
 item types into their base form given some probability.
