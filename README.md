@@ -1,12 +1,17 @@
 # Ahungry Deletefier
 
-NOTE: Beta quality, I need to do some play throughs with this mod!
+NOTE: Alpha quality, I need to do some play throughs with this mod!
 
 WARNING: You will NOT be able to complete certain quests as expected
 with this mod.  Accepting that will (perhaps) add some replayability -
 or let CLUAConsole be your friend for items you feel you should have
 received (use NearInfinity or EEKeeper on another saved game to find
 the item codes).
+
+This is also probably going to do really dumb things, like remove
+"creature" items off of creatures (where some creature abilities are
+stored/tracked by item codes like GHOULC.itm, or the troll thing SCS
+does?).
 
 What percent of items would you like to have disappear (creatures,
 stores, and areas)?
