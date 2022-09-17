@@ -31,6 +31,10 @@ What percent of items would you like to have disappear?~
   ACTION_READLN ~del_per~
 END
 
+// Unconventional item formats from various mods out there
+OUTER_SPRINT rx_uncon_weap ".*\(sap\|misc75\|cmswq\|cmdaq\|polsw\|cmtsw\|cmax\|soaitm\).*"
+OUTER_SPRINT rx_uncon_armr ".*\(rr#\|macloc\|cmheal\|perrin\|armo\|xadvb\|bardic\|xseq\|cdia\|rsenc\|cotwiz\|xbrbwiz\).*"
+
 // https://gibberlings3.github.io/iesdp/file_formats/ie_formats/are_v1.htm
 COPY_EXISTING_REGEXP GLOB ~^.+\.are$~ ~override~
   // Iterate through items to see replaceable ones vs deleteables
@@ -49,12 +53,12 @@ COPY_EXISTING_REGEXP GLOB ~^.+\.are$~ ~override~
     END
 
     // Unconventional mod weapons
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*\(cmswq\|cmdaq\|polsw\).*" = 0) AND RANDOM(1 100) <= %del_per% BEGIN // find item
+    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ~%rx_uncon_weap%~ = 0) AND RANDOM(1 100) <= %del_per% BEGIN // find item
       WRITE_ASCII (itm_off + (0x14 * index)) "sw1h01" #8 // replace item
     END
 
     // Unconventional mod armor
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*\(armo\|xadvb\).*" = 0) AND RANDOM(1 100) <= %del_per% BEGIN // find item
+    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ~%rx_uncon_armr%~ = 0) AND RANDOM(1 100) <= %del_per% BEGIN // find item
       WRITE_ASCII (itm_off + (0x14 * index)) "misc17" #8 // replace item
     END
 
@@ -298,12 +302,12 @@ COPY_EXISTING_REGEXP GLOB ~^.+\.sto$~ ~override~
     END
 
     // Unconventional mod weapons
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*\(cmswq\|cmdaq\|polsw\).*" = 0) AND RANDOM(1 100) <= %del_per% BEGIN // find item
+    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ~%rx_uncon_weap%~ = 0) AND RANDOM(1 100) <= %del_per% BEGIN // find item
       WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
     END
 
     // Unconventional mod armor
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*\(armo\|xadvb\).*" = 0) AND RANDOM(1 100) <= %del_per% BEGIN // find item
+    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ~%rx_uncon_armr%~ = 0) AND RANDOM(1 100) <= %del_per% BEGIN // find item
       WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
     END
 
@@ -556,12 +560,12 @@ COPY_EXISTING_REGEXP GLOB ~^.+\.cre$~ ~override~
         END
 
         // Unconventional mod weapons
-        PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*\(cmswq\|cmdaq\|polsw\).*" = 0) AND RANDOM(1 100) <= %del_per% BEGIN // find item
+        PATCH_IF ("%item%" STRING_COMPARE_REGEXP ~%rx_uncon_weap%~ = 0) AND RANDOM(1 100) <= %del_per% BEGIN // find item
           WRITE_ASCII (itm_off + (0x14 * index)) "sw1h01" #8 // replace item
         END
 
         // Unconventional mod armor
-        PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*\(armo\|xadvb\).*" = 0) AND RANDOM(1 100) <= %del_per% BEGIN // find item
+        PATCH_IF ("%item%" STRING_COMPARE_REGEXP ~%rx_uncon_armr%~ = 0) AND RANDOM(1 100) <= %del_per% BEGIN // find item
           WRITE_ASCII (itm_off + (0x14 * index)) "misc17" #8 // replace item
         END
 
