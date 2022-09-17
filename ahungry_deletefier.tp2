@@ -17,7 +17,7 @@ What percent of items would you like to have disappear (creatures, stores, and a
    50  = half of all items are deleted
    100 = all items are deleted that aren't script creations/random npc loot (probably a bad idea!)
 
-Hint: On a megamod (200+ mods) I enjoy 95 to 99 - it makes gear acquisition exciting again.
+Hint: On a megamod (200+ mods) I enjoy 90 to 95 - it makes gear acquisition exciting again.
 
 Please enter your answer as an integer. [0-100]~
 ACTION_READLN ~del_per~
@@ -155,9 +155,9 @@ COPY_EXISTING_REGEXP GLOB ~^.+\.are$~ ~override~
     END
 
     // clck handles cloaks AND robes for some reason...
-    // PATCH_IF ("%item%" STRING_COMPARE_REGEXP "^clck[0-9]+" = 0) AND RANDOM(1 100) <= %del_per% BEGIN // find item
-    //  WRITE_ASCII (itm_off + (0x14 * index)) "clck01" #8 // replace item
-    // END
+    PATCH_IF ("%item%" STRING_COMPARE_REGEXP "^clck[0-9]+" = 0) AND RANDOM(1 100) <= %del_per% BEGIN // find item
+     WRITE_ASCII (itm_off + (0x14 * index)) "misc17" #8 // replace item
+    END
 
     PATCH_IF ("%item%" STRING_COMPARE_REGEXP "^ring[0-9]+" = 0) AND RANDOM(1 100) <= %del_per% BEGIN // find item
       WRITE_ASCII (itm_off + (0x14 * index)) "ring01" #8 // replace item
@@ -215,17 +215,21 @@ COPY_EXISTING_REGEXP GLOB ~^.+\.are$~ ~override~
       WRITE_ASCII (itm_off + (0x14 * index)) "plaf01" #8 // replace item
     END
 
-  END // End of item loop
+    PATCH_IF ("%item%" STRING_COMPARE_REGEXP "^\(staf\|sw1h\|sw2h\|dagg\|ax1h\|ax2h\|sper\|hamm\|halb\|blun\|scim\|waki\|kata\|sw3h\|mace\|shld\|shbu\|shlg\|shmd\|shsm\|xbow\|boww\|slng\|helm\|ioun\|cowl\|amul\|boot\|belt\|clck\|ring\|brac\|robe\|leat\|chan\|plat\|armr\|slea\|pelt\|hide\|chan\|spli\|plah\|plaf\|misc\|book\|bag\|potn\)[0-9]+" != 0) AND RANDOM(1 100) <= %del_per% BEGIN // find NOT item
+      WRITE_ASCII (itm_off + (0x14 * index)) "misc17" #8 // replace
+    END
 
-  PATCH_IF RANDOM(1 100) <= %del_per% BEGIN
-    LPF DELETE_AREA_ITEM STR_VAR item_to_delete = "clck.+" END
-  END
+  END // End of area item loop
 
-  PATCH_IF RANDOM(1 100) <= %del_per% BEGIN
-    LPF DELETE_AREA_ITEM STR_VAR item_to_delete = "scrl.+" END
-  END
+  // PATCH_IF RANDOM(1 100) <= %del_per% BEGIN
+  //   LPF DELETE_AREA_ITEM STR_VAR item_to_delete = "clck.+" END
+  // END
 
-BUT_ONLY
+  // PATCH_IF RANDOM(1 100) <= %del_per% BEGIN
+  //   LPF DELETE_AREA_ITEM STR_VAR item_to_delete = "scrl.+" END
+  // END
+
+BUT_ONLY // End of areas
 
 
 // https://gibberlings3.github.io/iesdp/file_formats/ie_formats/sto_v1.htm
@@ -237,7 +241,7 @@ COPY_EXISTING_REGEXP GLOB ~^.+\.sto$~ ~override~
   FOR (index = 0 ; index < itm_num ; ++index) BEGIN // searches through items
     READ_ASCII (itm_off + (0x1c * index)) item
 
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP "^\(misc\|book\)[0-9]+" != 0) AND RANDOM(1 100) <= %del_per% BEGIN // find NOT item
+    PATCH_IF ("%item%" STRING_COMPARE_REGEXP "^\(misc\|book\|bag\)[0-9]+" != 0) AND RANDOM(1 100) <= %del_per% BEGIN // find NOT item
       WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace with dummy item
     END
   END // End of item loop
@@ -375,9 +379,9 @@ COPY_EXISTING_REGEXP GLOB ~^.+\.cre$~ ~override~
     END
 
     // clck handles cloaks AND robes for some reason...
-    // PATCH_IF ("%item%" STRING_COMPARE_REGEXP "^clck[0-9]+" = 0) AND RANDOM(1 100) <= %del_per% BEGIN // find item
-    //  WRITE_ASCII (itm_off + (0x14 * index)) "clck01" #8 // replace item
-    // END
+    PATCH_IF ("%item%" STRING_COMPARE_REGEXP "^clck[0-9]+" = 0) AND RANDOM(1 100) <= %del_per% BEGIN // find item
+     WRITE_ASCII (itm_off + (0x14 * index)) "misc17" #8 // replace item
+    END
 
     PATCH_IF ("%item%" STRING_COMPARE_REGEXP "^ring[0-9]+" = 0) AND RANDOM(1 100) <= %del_per% BEGIN // find item
       WRITE_ASCII (itm_off + (0x14 * index)) "ring01" #8 // replace item
@@ -435,16 +439,18 @@ COPY_EXISTING_REGEXP GLOB ~^.+\.cre$~ ~override~
       WRITE_ASCII (itm_off + (0x14 * index)) "plaf01" #8 // replace item
     END
 
+    PATCH_IF ("%item%" STRING_COMPARE_REGEXP "^\(staf\|sw1h\|sw2h\|dagg\|ax1h\|ax2h\|sper\|hamm\|halb\|blun\|scim\|waki\|kata\|sw3h\|mace\|shld\|shbu\|shlg\|shmd\|shsm\|xbow\|boww\|slng\|helm\|ioun\|cowl\|amul\|boot\|belt\|clck\|ring\|brac\|robe\|leat\|chan\|plat\|armr\|slea\|pelt\|hide\|chan\|spli\|plah\|plaf\|misc\|book\|bag\|potn\)[0-9]+" != 0) AND RANDOM(1 100) <= %del_per% BEGIN // find NOT item
+      WRITE_ASCII (itm_off + (0x14 * index)) "misc17" #8 // replace
+    END
+
   END // End of the item loop
 
-  PATCH_IF RANDOM(1 100) <= %del_per% BEGIN
-    LPF DELETE_CRE_ITEM STR_VAR item_to_delete = "clck.+" END
-  END
+  // PATCH_IF RANDOM(1 100) <= %del_per% BEGIN
+  //   LPF DELETE_CRE_ITEM STR_VAR item_to_delete = "scrl.+" END
+  // END
 
-  PATCH_IF RANDOM(1 100) <= %del_per% BEGIN
-    LPF DELETE_CRE_ITEM STR_VAR item_to_delete = "scrl.+" END
-  END
+BUT_ONLY // end of items pass 1
 
-  // TODO: Use ADD_CRE_ITEM to re-create necessary key items that got hit by this
-
-BUT_ONLY
+COPY_EXISTING_REGEXP GLOB ~^.+\.cre$~ ~override~
+  LPF DELETE_CRE_ITEM STR_VAR item_to_delete = "misc17" END
+BUT_ONLY // end of items pass 2
