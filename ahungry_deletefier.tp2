@@ -429,7 +429,7 @@ COPY_EXISTING_REGEXP GLOB ~^.+\.are$~ ~override~
     END
 
     PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*boot.*" = 0) AND RANDOM(1 100) <= %del_per% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x14 * index)) "boot01" #8 // replace item
+      WRITE_ASCII (itm_off + (0x14 * index)) "misc17" #8 // replace item
     END
 
     PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*belt.*" = 0) AND RANDOM(1 100) <= %del_per% BEGIN // find item
@@ -697,7 +697,7 @@ COPY_EXISTING_REGEXP GLOB ~^.+\.cre$~ ~override~
       END
 
       PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*boot.*" = 0) AND RANDOM(1 100) <= %del_per% BEGIN // find item
-        WRITE_ASCII (itm_off + (0x14 * index)) "boot01" #8 // replace item
+        WRITE_ASCII (itm_off + (0x14 * index)) "misc17" #8 // replace item
       END
 
       PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*belt.*" = 0) AND RANDOM(1 100) <= %del_per% BEGIN // find item
