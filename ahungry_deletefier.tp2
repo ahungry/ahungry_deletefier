@@ -31,8 +31,8 @@ What percent of items would you like to have disappear?~
 END
 
 // Unconventional item formats from various mods out there
-OUTER_SPRINT rx_uncon_weap ".*\(sap\|dsswd\|cleaver\|misc75\|cmswq\|cmdaq\|polsw\|cmt\|cmax\|xstap\|soaitm\|flail\|wand\).*"
-OUTER_SPRINT rx_uncon_armr ".*\(rr#\|bdbrd\|deitm\|anclk\|dsrng\|sheart\|macloc\|cmheal\|perrin\|armo\|xadvb\|bardic\|xseq\|cdia\|c0wl\|band\|xsorc\|c0mn\|rsenc\|cotwiz\|xbrbwiz\|circ\).*"
+OUTER_SPRINT rx_uncon_weap ".*\(sap\|cms\|dsswd\|cleaver\|misc75\|cmswq\|cmdaq\|polsw\|cmt\|cmax\|xstap\|soaitm\|flail\|wand\).*"
+OUTER_SPRINT rx_uncon_armr ".*\(rr#\|cmar\|bdbrd\|deitm\|anclk\|dsrng\|sheart\|macloc\|cmheal\|perrin\|armo\|xadvb\|bardic\|xseq\|cdia\|c0wl\|band\|xsorc\|c0mn\|rsenc\|cotwiz\|xbrbwiz\|circ\).*"
 
 
 // https://gibberlings3.github.io/iesdp/file_formats/ie_formats/sto_v1.htm
