@@ -1,6 +1,12 @@
 # Ahungry Deletefier
 
-NOTE: Alpha quality, I need to do some play throughs with this mod!
+BG:EE/BG2:EE/EET mod - Removes many items from
+creatures/stores/areas - basically tries to 'downgrade' any special
+item types into their base form given some probability.
+
+# NOTE
+
+Beta quality, I need to do some play throughs with this mod!
 
 WARNING: You will NOT be able to complete certain quests as expected
 with this mod.  Accepting that will (perhaps) add some replayability -
@@ -8,46 +14,45 @@ or let CLUAConsole be your friend for items you feel you should have
 received (use NearInfinity or EEKeeper on another saved game to find
 the item codes).
 
-This is also probably going to do really dumb things, like remove
-"creature" items off of creatures (where some creature abilities are
-stored/tracked by item codes like GHOULC.itm, or the troll thing SCS
-does?).
-
 What percent of items would you like to have disappear (creatures,
 stores, and areas)?
 
+```
    0   = no items deleted (why are you installing this mod again?)
    50  = half of all items are deleted
    100 = all items are deleted that aren't script creations/random npc loot (probably a bad idea!)
+```
 
 Hint: On a megamod (200+ mods) I enjoy 90 to 95 - it makes gear
 acquisition exciting again.
 
-BG:EE/BG2:EE/EET mod - Removes many items from
-creatures/stores/areas - basically tries to 'downgrade' any special
-item types into their base form given some probability.
+## Install
 
 I would recommend installing this last, or at least after all mods
 that update/add files in override/
 
-# TODO
-
-I would like to explicitly re-add (or skip removal of) quest items
-which aren't exciting to have removed (and pretty much break another
-mod if not present) - things like Magic Store of Vergadan and other
-fun mods that are heavily item driven.  I probably just need to find
-the related mod prefixes.  The trick is that some mods (ones with tons
-of +3/+4 weapons in bg1) should have most their items obliterated (to
-keep things exciting).
-
-## Install
 
 ```
 weinstall ahungry_deletefier
 ```
+
+Or to install specific parts non-interactively (*nix based at least...):
+
+```
+echo -ne '90\n90\n90\n' | weinstall ahungry_deletefier --force-install 1 1000 2000 3000 4000
+```
+
+Would install (at 90% deletion percent) the stores component (2000),
+the area component (3000) and the creature component (4000).
 
 ## Uninstall
 
 ```
 weinstall ahungry_deletefier --uninstall
 ```
+
+# TODO
+
+Build up list of deletables and non-deletables.
+
+https://www.gibberlings3.net/forums/topic/35993-ahungrys-deletefier-make-rare-items-rare-again-restore-that-lost-excitement/
