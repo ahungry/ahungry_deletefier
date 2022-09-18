@@ -30,6 +30,8 @@ OUTER_SPRINT rx_uncon_armr ".*\(rr#\|cmar\|bdbrd\|deitm\|anclk\|sheart\|macloc\|
 // Some mod with DS at start of items adds a ton of powerful gear
 OUTER_SPRINT rx_uncon_ds "^ds.*"
 
+// List items we will always allow to remain (mostly basic things we're downgrading to)
+OUTER_SPRINT rx_keep "^\(sw1h04\|leat01\|staf01\|dagg01\|ax1h01\|sper01\|hamm01\|halb01\|blun01\|blun04\|shld01\|shld04\|shld03\|xbow01\|bow05\|helm01\|helm02\|helm03\|chan01\|plat01\|chan04\|bull01\|arow01\|bolt01\|dart01\|potn08\)"
 
 BEGIN ~Ahungry's Deletefier: Stores~ DESIGNATED 2000 LABEL ahungry_deletefier_stores
 REQUIRE_PREDICATE (MOD_IS_INSTALLED ~ahungry_deletefier/ahungry_deletefier.tp2~ 1000) ""
@@ -55,235 +57,238 @@ COPY_EXISTING_REGEXP GLOB ~^.+\.sto$~ ~override~
   FOR (index = 0 ; index < itm_num ; ++index) BEGIN // searches through items
     READ_ASCII (itm_off + (0x1c * index)) item
 
-    // PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*\(misc\|book\|bag\).*" != 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find NOT item
-    //   WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace with dummy item
-    // END
+    // Avoid removing basic items
+    PATCH_IF ("%item%" STRING_COMPARE_REGEXP "%rx_keep%" = 1) BEGIN
 
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*staf.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find staff item
-      WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace with staf01
-    END
+      // PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*\(misc\|book\|bag\).*" != 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find NOT item
+      //   WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace with dummy item
+      // END
 
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*sw1h.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*staf.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find staff item
+        WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace with staf01
+      END
+
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*sw1h.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
+      END
+
+      // Unconventional mod weapons
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP "%rx_uncon_weap%" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
+      END
+
+      // Unconventional mod armor
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP "%rx_uncon_armr%" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
+      END
+
+      // Unconventional DS stuff
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP "%rx_uncon_ds%" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
+      END
+
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*sw2h.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
+      END
+
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*dagg.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
+      END
+
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*ax1h.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
+      END
+
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*ax2h.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
+      END
+
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*sper.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
+      END
+
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*hamm.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
+      END
+
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*halb.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
+      END
+
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*blun.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
+      END
+
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*scim.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
+      END
+
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*waki.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
+      END
+
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*kata.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
+      END
+
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*sw3h.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
+      END
+
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*mace.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
+      END
+
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*shield.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
+      END
+
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*shld.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
+      END
+
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*shbu.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
+      END
+
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*shlg.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
+      END
+
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*shmd.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
+      END
+
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*shsm.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
+      END
+
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*xbow.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
+      END
+
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*bow.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
+      END
+
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*slng.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
+      END
+
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*hel.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
+      END
+
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*helm.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
+      END
+
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*ioun.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
+      END
+
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*cowl.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
+      END
+
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*amul.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
+      END
+
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*boot.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
+      END
+
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*belt.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
+      END
+
+      // clck handles cloaks AND robes for some reason...
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*clck.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
       WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
-    END
+      END
 
-    // Unconventional mod weapons
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP "%rx_uncon_weap%" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
-    END
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*ring.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
+      END
 
-    // Unconventional mod armor
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP "%rx_uncon_armr%" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
-    END
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*brac.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
+      END
 
-    // Unconventional DS stuff
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP "%rx_uncon_ds%" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
-    END
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*robe.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
+      END
 
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*sw2h.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
-    END
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*leat.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
+      END
 
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*dagg.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
-    END
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*chan.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
+      END
 
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*ax1h.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
-    END
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*plat.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
+      END
 
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*ax2h.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
-    END
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*armr.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
+      END
 
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*sper.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
-    END
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*slea.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
+      END
 
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*hamm.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
-    END
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*pelt.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
+      END
 
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*halb.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
-    END
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*hide.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
+      END
 
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*blun.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
-    END
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*chan.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
+      END
 
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*scim.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
-    END
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*spli.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
+      END
 
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*waki.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
-    END
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*plah.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
+      END
 
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*kata.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
-    END
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*plaf.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
+      END
 
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*sw3h.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
-    END
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*arow.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
+      END
 
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*mace.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
-    END
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*bull.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
+      END
 
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*shield.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
-    END
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*bolt.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
+      END
 
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*shld.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
-    END
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*dart.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
+      END
 
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*shbu.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
-    END
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*potn.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
+      END
 
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*shlg.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
-    END
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*scrl.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
+      END
 
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*shmd.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
-    END
-
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*shsm.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
-    END
-
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*xbow.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
-    END
-
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*bow.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
-    END
-
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*slng.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
-    END
-
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*hel.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
-    END
-
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*helm.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
-    END
-
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*ioun.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
-    END
-
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*cowl.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
-    END
-
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*amul.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
-    END
-
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*boot.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
-    END
-
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*belt.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
-    END
-
-    // clck handles cloaks AND robes for some reason...
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*clck.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
-     WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
-    END
-
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*ring.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
-    END
-
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*brac.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
-    END
-
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*robe.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
-    END
-
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*leat.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
-    END
-
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*chan.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
-    END
-
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*plat.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
-    END
-
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*armr.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
-    END
-
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*slea.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
-    END
-
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*pelt.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
-    END
-
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*hide.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
-    END
-
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*chan.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
-    END
-
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*spli.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
-    END
-
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*plah.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
-    END
-
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*plaf.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
-    END
-
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*arow.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
-    END
-
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*bull.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
-    END
-
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*bolt.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
-    END
-
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*dart.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
-    END
-
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*potn.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
-    END
-
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*scrl.*" = 0) AND RANDOM(1 100) <= %del_per_sto% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
-    END
-
-
+    END // End of rx_keep IF
   END // End of item loop
 BUT_ONLY // end of store pass 1
 
@@ -318,235 +323,238 @@ COPY_EXISTING_REGEXP GLOB ~^.+\.are$~ ~override~
   FOR (index = 0 ; index < itm_num ; ++index) BEGIN // searches through items
     READ_ASCII (itm_off + (0x14 * index)) item
 
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*staf.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find staff item
-      WRITE_ASCII (itm_off + (0x14 * index)) "staf01" #8 // replace with staf01
-    END
+    // Avoid removing basic items
+    PATCH_IF ("%item%" STRING_COMPARE_REGEXP "%rx_keep%" = 1) BEGIN
 
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*sw1h.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x14 * index)) "sw1h01" #8 // replace item
-    END
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*staf.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find staff item
+        WRITE_ASCII (itm_off + (0x14 * index)) "staf01" #8 // replace with staf01
+      END
 
-    // Unconventional mod weapons
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP "%rx_uncon_weap%" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x14 * index)) "sw1h01" #8 // replace item
-    END
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*sw1h.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x14 * index)) "sw1h01" #8 // replace item
+      END
 
-    // Unconventional mod armor
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP "%rx_uncon_armr%" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
+      // Unconventional mod weapons
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP "%rx_uncon_weap%" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x14 * index)) "sw1h01" #8 // replace item
+      END
+
+      // Unconventional mod armor
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP "%rx_uncon_armr%" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x14 * index)) "misc17" #8 // replace item
+      END
+
+      // Unconventional DS stuff
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP "%rx_uncon_ds%" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x14 * index)) "misc17" #8 // replace item
+      END
+
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*sw2h.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x14 * index)) "sw2h01" #8 // replace item
+      END
+
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*dagg.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x14 * index)) "dagg01" #8 // replace item
+      END
+
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*ax1h.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x14 * index)) "ax1h01" #8 // replace item
+      END
+
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*ax2h.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x14 * index)) "ax1h01" #8 // replace item
+      END
+
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*sper.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x14 * index)) "sper01" #8 // replace item
+      END
+
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*hamm.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x14 * index)) "hamm01" #8 // replace item
+      END
+
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*halb.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x14 * index)) "halb01" #8 // replace item
+      END
+
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*blun.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x14 * index)) "blun01" #8 // replace item
+      END
+
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*scim.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x14 * index)) "sw1h04" #8 // replace item
+      END
+
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*waki.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x14 * index)) "sw1h04" #8 // replace item
+      END
+
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*kata.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x14 * index)) "sw1h04" #8 // replace item
+      END
+
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*sw3h.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x14 * index)) "sw1h04" #8 // replace item
+      END
+
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*mace.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x14 * index)) "blun04" #8 // replace item
+      END
+
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*shield.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x14 * index)) "shld01" #8 // replace item
+      END
+
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*shld.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x14 * index)) "shld01" #8 // replace item
+      END
+
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*shbu.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x14 * index)) "shld08" #8 // replace item
+      END
+
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*shlg.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x14 * index)) "shld04" #8 // replace item
+      END
+
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*shmd.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x14 * index)) "shld03" #8 // replace item
+      END
+
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*shsm.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x14 * index)) "shld01" #8 // replace item
+      END
+
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*xbow.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x14 * index)) "xbow01" #8 // replace item
+      END
+
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*bow.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x14 * index)) "bow05" #8 // replace item
+      END
+
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*slng.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x14 * index)) "slng01" #8 // replace item
+      END
+
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*hel.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x14 * index)) "helm01" #8 // replace item
+      END
+
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*helm.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x14 * index)) "helm01" #8 // replace item
+      END
+
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*ioun.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x14 * index)) "helm01" #8 // replace item
+      END
+
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*cowl.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x14 * index)) "helm01" #8 // replace item
+      END
+
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*amul.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x14 * index)) "amul01" #8 // replace item
+      END
+
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*boot.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x14 * index)) "misc17" #8 // replace item
+      END
+
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*belt.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x14 * index)) "belt01" #8 // replace item
+      END
+
+      // clck handles cloaks AND robes for some reason...
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*clck.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
       WRITE_ASCII (itm_off + (0x14 * index)) "misc17" #8 // replace item
-    END
+      END
 
-    // Unconventional DS stuff
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP "%rx_uncon_ds%" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x14 * index)) "misc17" #8 // replace item
-    END
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*ring.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x14 * index)) "ring01" #8 // replace item
+      END
 
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*sw2h.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x14 * index)) "sw2h01" #8 // replace item
-    END
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*brac.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x14 * index)) "brac01" #8 // replace item
+      END
 
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*dagg.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x14 * index)) "dagg01" #8 // replace item
-    END
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*robe.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x14 * index)) "clck11" #8 // replace item
+      END
 
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*ax1h.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x14 * index)) "ax1h01" #8 // replace item
-    END
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*leat.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x14 * index)) "leat01" #8 // replace item
+      END
 
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*ax2h.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x14 * index)) "ax1h01" #8 // replace item
-    END
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*chan.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x14 * index)) "chan01" #8 // replace item
+      END
 
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*sper.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x14 * index)) "sper01" #8 // replace item
-    END
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*plat.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x14 * index)) "plat01" #8 // replace item
+      END
 
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*hamm.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x14 * index)) "hamm01" #8 // replace item
-    END
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*armr.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x14 * index)) "leat01" #8 // replace item
+      END
 
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*halb.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x14 * index)) "halb01" #8 // replace item
-    END
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*slea.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x14 * index)) "leat01" #8 // replace item
+      END
 
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*blun.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x14 * index)) "blun01" #8 // replace item
-    END
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*pelt.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x14 * index)) "leat01" #8 // replace item
+      END
 
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*scim.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x14 * index)) "sw1h04" #8 // replace item
-    END
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*hide.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x14 * index)) "leat01" #8 // replace item
+      END
 
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*waki.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x14 * index)) "sw1h04" #8 // replace item
-    END
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*chan.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x14 * index)) "chan01" #8 // replace item
+      END
 
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*kata.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x14 * index)) "sw1h04" #8 // replace item
-    END
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*spli.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x14 * index)) "chan04" #8 // replace item
+      END
 
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*sw3h.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x14 * index)) "sw1h04" #8 // replace item
-    END
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*plah.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x14 * index)) "plat01" #8 // replace item
+      END
 
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*mace.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x14 * index)) "blun04" #8 // replace item
-    END
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*plaf.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x14 * index)) "plat01" #8 // replace item
+      END
 
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*shield.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x14 * index)) "shld01" #8 // replace item
-    END
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*arow.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x14 * index)) "arow01" #8 // replace item
+      END
 
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*shld.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x14 * index)) "shld01" #8 // replace item
-    END
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*bull.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x14 * index)) "bull01" #8 // replace item
+      END
 
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*shbu.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x14 * index)) "shld08" #8 // replace item
-    END
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*bolt.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x14 * index)) "bolt01" #8 // replace item
+      END
 
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*shlg.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x14 * index)) "shld04" #8 // replace item
-    END
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*dart.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x14 * index)) "dart01" #8 // replace item
+      END
 
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*shmd.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x14 * index)) "shld03" #8 // replace item
-    END
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*potn.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x14 * index)) "potn08" #8 // replace item
+      END
 
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*shsm.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x14 * index)) "shld01" #8 // replace item
-    END
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*scrl.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x14 * index)) "misc17" #8 // replace item
+      END
 
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*xbow.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x14 * index)) "xbow01" #8 // replace item
-    END
-
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*bow.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x14 * index)) "bow05" #8 // replace item
-    END
-
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*slng.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x14 * index)) "slng01" #8 // replace item
-    END
-
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*hel.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x14 * index)) "helm01" #8 // replace item
-    END
-
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*helm.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x14 * index)) "helm01" #8 // replace item
-    END
-
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*ioun.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x14 * index)) "helm01" #8 // replace item
-    END
-
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*cowl.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x14 * index)) "helm01" #8 // replace item
-    END
-
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*amul.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x14 * index)) "amul01" #8 // replace item
-    END
-
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*boot.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x14 * index)) "misc17" #8 // replace item
-    END
-
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*belt.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x14 * index)) "belt01" #8 // replace item
-    END
-
-    // clck handles cloaks AND robes for some reason...
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*clck.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
-     WRITE_ASCII (itm_off + (0x14 * index)) "misc17" #8 // replace item
-    END
-
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*ring.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x14 * index)) "ring01" #8 // replace item
-    END
-
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*brac.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x14 * index)) "brac01" #8 // replace item
-    END
-
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*robe.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x14 * index)) "clck11" #8 // replace item
-    END
-
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*leat.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x14 * index)) "leat01" #8 // replace item
-    END
-
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*chan.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x14 * index)) "chan01" #8 // replace item
-    END
-
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*plat.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x14 * index)) "plat01" #8 // replace item
-    END
-
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*armr.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x14 * index)) "leat01" #8 // replace item
-    END
-
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*slea.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x14 * index)) "leat01" #8 // replace item
-    END
-
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*pelt.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x14 * index)) "leat01" #8 // replace item
-    END
-
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*hide.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x14 * index)) "leat01" #8 // replace item
-    END
-
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*chan.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x14 * index)) "chan01" #8 // replace item
-    END
-
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*spli.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x14 * index)) "chan04" #8 // replace item
-    END
-
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*plah.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x14 * index)) "plat01" #8 // replace item
-    END
-
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*plaf.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x14 * index)) "plat01" #8 // replace item
-    END
-
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*arow.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x14 * index)) "arow01" #8 // replace item
-    END
-
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*bull.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x14 * index)) "bull01" #8 // replace item
-    END
-
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*bolt.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x14 * index)) "bolt01" #8 // replace item
-    END
-
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*dart.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x14 * index)) "dart01" #8 // replace item
-    END
-
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*potn.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x14 * index)) "potn08" #8 // replace item
-    END
-
-    PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*scrl.*" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x14 * index)) "misc17" #8 // replace item
-    END
-
-    // Brute force fallback patches out a ton of stuff...
-    // PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*\(staf\|sw1h\|sw2h\|dagg\|ax1h\|ax2h\|sper\|hamm\|halb\|blun\|scim\|waki\|kata\|sw3h\|mace\|shld\|shbu\|shlg\|shmd\|shsm\|xbow\|bow\|slng\|helm\|ioun\|cowl\|amul\|boot\|belt\|clck\|ring\|brac\|robe\|leat\|chan\|plat\|armr\|slea\|pelt\|hide\|chan\|spli\|plah\|plaf\|misc\|book\|bag\|potn\|arow\|dart\|bull\|bolt\).*" != 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find NOT item
-    //   WRITE_ASCII (itm_off + (0x14 * index)) "misc17" #8 // replace
-    // END
-
+      // Brute force fallback patches out a ton of stuff...
+      // PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*\(staf\|sw1h\|sw2h\|dagg\|ax1h\|ax2h\|sper\|hamm\|halb\|blun\|scim\|waki\|kata\|sw3h\|mace\|shld\|shbu\|shlg\|shmd\|shsm\|xbow\|bow\|slng\|helm\|ioun\|cowl\|amul\|boot\|belt\|clck\|ring\|brac\|robe\|leat\|chan\|plat\|armr\|slea\|pelt\|hide\|chan\|spli\|plah\|plaf\|misc\|book\|bag\|potn\|arow\|dart\|bull\|bolt\).*" != 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find NOT item
+      //   WRITE_ASCII (itm_off + (0x14 * index)) "misc17" #8 // replace
+      // END
+    END // End of rx_keep IF
   END // End of area item loop
 
 BUT_ONLY // End of areas pass 1
@@ -589,252 +597,255 @@ COPY_EXISTING_REGEXP GLOB ~^.+\.cre$~ ~override~
     FOR (index = 0 ; index < itm_num ; ++index) BEGIN // searches through items
       READ_ASCII (itm_off + (0x14 * index)) item
 
-      // // This was lifted from setup-cdtweaks.tp2 - shows how to make an item identified - how to check it? hmmm
-      // // WRITE_BYTE (itm_off + 0x10 + (0x14 * index)) (THIS BOR 0b00000001) // adds identified flag
-      // READ_BYTE (itm_off + 0x10 + (0x14 * index)) identified_byte
-      // SET is_identified = identified_byte BAND 0b00000001 // all the zeros mask out the stuff we ignore, we need matching 1s
+      // Avoid removing basic items
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP "%rx_keep%" = 1) BEGIN
+        // // This was lifted from setup-cdtweaks.tp2 - shows how to make an item identified - how to check it? hmmm
+        // // WRITE_BYTE (itm_off + 0x10 + (0x14 * index)) (THIS BOR 0b00000001) // adds identified flag
+        // READ_BYTE (itm_off + 0x10 + (0x14 * index)) identified_byte
+        // SET is_identified = identified_byte BAND 0b00000001 // all the zeros mask out the stuff we ignore, we need matching 1s
 
 
-      // Ok, slots reference indexes in this item data - we could check if stuff was equipped or not
-      // Using is_identified NOT identified will let us get unidentified items with this, but we will still
-      // end up scooping up basic gear, as the creature is_identified bit acts like an override (if an item itself
-      // is never unidentified to begin with, this bit is simply missing most the time)
-      // PATCH_IF is_identified = 0 BEGIN
+        // Ok, slots reference indexes in this item data - we could check if stuff was equipped or not
+        // Using is_identified NOT identified will let us get unidentified items with this, but we will still
+        // end up scooping up basic gear, as the creature is_identified bit acts like an override (if an item itself
+        // is never unidentified to begin with, this bit is simply missing most the time)
+        // PATCH_IF is_identified = 0 BEGIN
 
-      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*staf.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find staff item
-        WRITE_ASCII (itm_off + (0x14 * index)) "staf01" #8 // replace with staf01
-      END
+        PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*staf.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find staff item
+          WRITE_ASCII (itm_off + (0x14 * index)) "staf01" #8 // replace with staf01
+        END
 
-      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*sw1h.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
-        WRITE_ASCII (itm_off + (0x14 * index)) "sw1h01" #8 // replace item
-      END
+        PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*sw1h.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
+          WRITE_ASCII (itm_off + (0x14 * index)) "sw1h01" #8 // replace item
+        END
 
-      // Unconventional mod weapons
-      PATCH_IF ("%item%" STRING_COMPARE_REGEXP "%rx_uncon_weap%" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
-        WRITE_ASCII (itm_off + (0x14 * index)) "sw1h01" #8 // replace item
-      END
+        // Unconventional mod weapons
+        PATCH_IF ("%item%" STRING_COMPARE_REGEXP "%rx_uncon_weap%" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
+          WRITE_ASCII (itm_off + (0x14 * index)) "sw1h01" #8 // replace item
+        END
 
-      // Unconventional mod armor
-      PATCH_IF ("%item%" STRING_COMPARE_REGEXP "%rx_uncon_armr%" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
+        // Unconventional mod armor
+        PATCH_IF ("%item%" STRING_COMPARE_REGEXP "%rx_uncon_armr%" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
+          WRITE_ASCII (itm_off + (0x14 * index)) "misc17" #8 // replace item
+        END
+
+        // Unconventional DS stuff
+        PATCH_IF ("%item%" STRING_COMPARE_REGEXP "%rx_uncon_ds%" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
+          WRITE_ASCII (itm_off + (0x14 * index)) "misc17" #8 // replace item
+        END
+
+        PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*sw2h.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
+          WRITE_ASCII (itm_off + (0x14 * index)) "sw2h01" #8 // replace item
+        END
+
+        PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*dagg.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
+          WRITE_ASCII (itm_off + (0x14 * index)) "dagg01" #8 // replace item
+        END
+
+        PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*ax1h.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
+          WRITE_ASCII (itm_off + (0x14 * index)) "ax1h01" #8 // replace item
+        END
+
+        PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*ax2h.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
+          WRITE_ASCII (itm_off + (0x14 * index)) "ax1h01" #8 // replace item
+        END
+
+        PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*sper.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
+          WRITE_ASCII (itm_off + (0x14 * index)) "sper01" #8 // replace item
+        END
+
+        PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*hamm.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
+          WRITE_ASCII (itm_off + (0x14 * index)) "hamm01" #8 // replace item
+        END
+
+        PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*halb.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
+          WRITE_ASCII (itm_off + (0x14 * index)) "halb01" #8 // replace item
+        END
+
+        PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*blun.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
+          WRITE_ASCII (itm_off + (0x14 * index)) "blun01" #8 // replace item
+        END
+
+        PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*scim.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
+          WRITE_ASCII (itm_off + (0x14 * index)) "sw1h04" #8 // replace item
+        END
+
+        PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*waki.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
+          WRITE_ASCII (itm_off + (0x14 * index)) "sw1h04" #8 // replace item
+        END
+
+        PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*kata.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
+          WRITE_ASCII (itm_off + (0x14 * index)) "sw1h04" #8 // replace item
+        END
+
+        PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*sw3h.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
+          WRITE_ASCII (itm_off + (0x14 * index)) "sw1h04" #8 // replace item
+        END
+
+        PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*mace.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
+          WRITE_ASCII (itm_off + (0x14 * index)) "blun04" #8 // replace item
+        END
+
+        PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*shield.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
+          WRITE_ASCII (itm_off + (0x14 * index)) "shld01" #8 // replace item
+        END
+
+        PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*shld.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
+          WRITE_ASCII (itm_off + (0x14 * index)) "shld01" #8 // replace item
+        END
+
+        PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*shbu.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
+          WRITE_ASCII (itm_off + (0x14 * index)) "shld08" #8 // replace item
+        END
+
+        PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*shlg.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
+          WRITE_ASCII (itm_off + (0x14 * index)) "shld04" #8 // replace item
+        END
+
+        PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*shmd.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
+          WRITE_ASCII (itm_off + (0x14 * index)) "shld03" #8 // replace item
+        END
+
+        PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*shsm.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
+          WRITE_ASCII (itm_off + (0x14 * index)) "shld01" #8 // replace item
+        END
+
+        PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*xbow.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
+          WRITE_ASCII (itm_off + (0x14 * index)) "xbow01" #8 // replace item
+        END
+
+        PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*bow.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
+          WRITE_ASCII (itm_off + (0x14 * index)) "bow05" #8 // replace item
+        END
+
+        PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*slng.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
+          WRITE_ASCII (itm_off + (0x14 * index)) "slng01" #8 // replace item
+        END
+
+        PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*hel.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
+          WRITE_ASCII (itm_off + (0x14 * index)) "helm01" #8 // replace item
+        END
+
+        PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*helm.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
+          WRITE_ASCII (itm_off + (0x14 * index)) "helm01" #8 // replace item
+        END
+
+        PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*ioun.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
+          WRITE_ASCII (itm_off + (0x14 * index)) "helm01" #8 // replace item
+        END
+
+        PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*cowl.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
+          WRITE_ASCII (itm_off + (0x14 * index)) "helm01" #8 // replace item
+        END
+
+        PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*amul.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
+          WRITE_ASCII (itm_off + (0x14 * index)) "amul01" #8 // replace item
+        END
+
+        PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*boot.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
+          WRITE_ASCII (itm_off + (0x14 * index)) "misc17" #8 // replace item
+        END
+
+        PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*belt.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
+          WRITE_ASCII (itm_off + (0x14 * index)) "belt01" #8 // replace item
+        END
+
+        // clck handles cloaks AND robes for some reason...
+        PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*clck.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
         WRITE_ASCII (itm_off + (0x14 * index)) "misc17" #8 // replace item
-      END
+        END
 
-      // Unconventional DS stuff
-      PATCH_IF ("%item%" STRING_COMPARE_REGEXP "%rx_uncon_ds%" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
-        WRITE_ASCII (itm_off + (0x14 * index)) "misc17" #8 // replace item
-      END
+        PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*ring.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
+          WRITE_ASCII (itm_off + (0x14 * index)) "ring01" #8 // replace item
+        END
 
-      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*sw2h.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
-        WRITE_ASCII (itm_off + (0x14 * index)) "sw2h01" #8 // replace item
-      END
+        PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*brac.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
+          WRITE_ASCII (itm_off + (0x14 * index)) "brac01" #8 // replace item
+        END
 
-      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*dagg.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
-        WRITE_ASCII (itm_off + (0x14 * index)) "dagg01" #8 // replace item
-      END
+        PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*robe.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
+          WRITE_ASCII (itm_off + (0x14 * index)) "clck11" #8 // replace item
+        END
 
-      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*ax1h.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
-        WRITE_ASCII (itm_off + (0x14 * index)) "ax1h01" #8 // replace item
-      END
+        PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*leat.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
+          WRITE_ASCII (itm_off + (0x14 * index)) "leat01" #8 // replace item
+        END
 
-      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*ax2h.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
-        WRITE_ASCII (itm_off + (0x14 * index)) "ax1h01" #8 // replace item
-      END
+        PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*chan.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
+          WRITE_ASCII (itm_off + (0x14 * index)) "chan01" #8 // replace item
+        END
 
-      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*sper.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
-        WRITE_ASCII (itm_off + (0x14 * index)) "sper01" #8 // replace item
-      END
+        PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*plat.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
+          WRITE_ASCII (itm_off + (0x14 * index)) "plat01" #8 // replace item
+        END
 
-      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*hamm.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
-        WRITE_ASCII (itm_off + (0x14 * index)) "hamm01" #8 // replace item
-      END
+        PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*armr.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
+          WRITE_ASCII (itm_off + (0x14 * index)) "leat01" #8 // replace item
+        END
 
-      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*halb.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
-        WRITE_ASCII (itm_off + (0x14 * index)) "halb01" #8 // replace item
-      END
+        PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*slea.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
+          WRITE_ASCII (itm_off + (0x14 * index)) "leat01" #8 // replace item
+        END
 
-      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*blun.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
-        WRITE_ASCII (itm_off + (0x14 * index)) "blun01" #8 // replace item
-      END
+        PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*pelt.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
+          WRITE_ASCII (itm_off + (0x14 * index)) "leat01" #8 // replace item
+        END
 
-      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*scim.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
-        WRITE_ASCII (itm_off + (0x14 * index)) "sw1h04" #8 // replace item
-      END
+        PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*hide.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
+          WRITE_ASCII (itm_off + (0x14 * index)) "leat01" #8 // replace item
+        END
 
-      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*waki.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
-        WRITE_ASCII (itm_off + (0x14 * index)) "sw1h04" #8 // replace item
-      END
+        PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*chan.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
+          WRITE_ASCII (itm_off + (0x14 * index)) "chan01" #8 // replace item
+        END
 
-      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*kata.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
-        WRITE_ASCII (itm_off + (0x14 * index)) "sw1h04" #8 // replace item
-      END
+        PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*spli.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
+          WRITE_ASCII (itm_off + (0x14 * index)) "chan04" #8 // replace item
+        END
 
-      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*sw3h.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
-        WRITE_ASCII (itm_off + (0x14 * index)) "sw1h04" #8 // replace item
-      END
+        PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*plah.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
+          WRITE_ASCII (itm_off + (0x14 * index)) "plat01" #8 // replace item
+        END
 
-      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*mace.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
-        WRITE_ASCII (itm_off + (0x14 * index)) "blun04" #8 // replace item
-      END
+        PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*plaf.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
+          WRITE_ASCII (itm_off + (0x14 * index)) "plat01" #8 // replace item
+        END
 
-      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*shield.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
-        WRITE_ASCII (itm_off + (0x14 * index)) "shld01" #8 // replace item
-      END
+        PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*arow.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
+          WRITE_ASCII (itm_off + (0x14 * index)) "arow01" #8 // replace item
+        END
 
-      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*shld.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
-        WRITE_ASCII (itm_off + (0x14 * index)) "shld01" #8 // replace item
-      END
+        PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*dart.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
+          WRITE_ASCII (itm_off + (0x14 * index)) "dart01" #8 // replace item
+        END
 
-      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*shbu.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
-        WRITE_ASCII (itm_off + (0x14 * index)) "shld08" #8 // replace item
-      END
+        PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*bull.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
+          WRITE_ASCII (itm_off + (0x14 * index)) "bull01" #8 // replace item
+        END
 
-      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*shlg.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
-        WRITE_ASCII (itm_off + (0x14 * index)) "shld04" #8 // replace item
-      END
+        PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*bolt.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
+          WRITE_ASCII (itm_off + (0x14 * index)) "bolt01" #8 // replace item
+        END
 
-      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*shmd.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
-        WRITE_ASCII (itm_off + (0x14 * index)) "shld03" #8 // replace item
-      END
+        PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*dart.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
+          WRITE_ASCII (itm_off + (0x14 * index)) "dart01" #8 // replace item
+        END
 
-      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*shsm.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
-        WRITE_ASCII (itm_off + (0x14 * index)) "shld01" #8 // replace item
-      END
+        PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*potn.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
+          WRITE_ASCII (itm_off + (0x14 * index)) "potn08" #8 // replace item
+        END
 
-      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*xbow.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
-        WRITE_ASCII (itm_off + (0x14 * index)) "xbow01" #8 // replace item
-      END
+        PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*scrl.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
+          WRITE_ASCII (itm_off + (0x14 * index)) "misc17" #8 // replace item
+        END
 
-      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*bow.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
-        WRITE_ASCII (itm_off + (0x14 * index)) "bow05" #8 // replace item
-      END
-
-      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*slng.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
-        WRITE_ASCII (itm_off + (0x14 * index)) "slng01" #8 // replace item
-      END
-
-      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*hel.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
-        WRITE_ASCII (itm_off + (0x14 * index)) "helm01" #8 // replace item
-      END
-
-      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*helm.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
-        WRITE_ASCII (itm_off + (0x14 * index)) "helm01" #8 // replace item
-      END
-
-      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*ioun.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
-        WRITE_ASCII (itm_off + (0x14 * index)) "helm01" #8 // replace item
-      END
-
-      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*cowl.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
-        WRITE_ASCII (itm_off + (0x14 * index)) "helm01" #8 // replace item
-      END
-
-      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*amul.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
-        WRITE_ASCII (itm_off + (0x14 * index)) "amul01" #8 // replace item
-      END
-
-      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*boot.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
-        WRITE_ASCII (itm_off + (0x14 * index)) "misc17" #8 // replace item
-      END
-
-      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*belt.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
-        WRITE_ASCII (itm_off + (0x14 * index)) "belt01" #8 // replace item
-      END
-
-      // clck handles cloaks AND robes for some reason...
-      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*clck.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
-      WRITE_ASCII (itm_off + (0x14 * index)) "misc17" #8 // replace item
-      END
-
-      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*ring.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
-        WRITE_ASCII (itm_off + (0x14 * index)) "ring01" #8 // replace item
-      END
-
-      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*brac.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
-        WRITE_ASCII (itm_off + (0x14 * index)) "brac01" #8 // replace item
-      END
-
-      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*robe.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
-        WRITE_ASCII (itm_off + (0x14 * index)) "clck11" #8 // replace item
-      END
-
-      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*leat.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
-        WRITE_ASCII (itm_off + (0x14 * index)) "leat01" #8 // replace item
-      END
-
-      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*chan.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
-        WRITE_ASCII (itm_off + (0x14 * index)) "chan01" #8 // replace item
-      END
-
-      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*plat.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
-        WRITE_ASCII (itm_off + (0x14 * index)) "plat01" #8 // replace item
-      END
-
-      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*armr.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
-        WRITE_ASCII (itm_off + (0x14 * index)) "leat01" #8 // replace item
-      END
-
-      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*slea.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
-        WRITE_ASCII (itm_off + (0x14 * index)) "leat01" #8 // replace item
-      END
-
-      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*pelt.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
-        WRITE_ASCII (itm_off + (0x14 * index)) "leat01" #8 // replace item
-      END
-
-      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*hide.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
-        WRITE_ASCII (itm_off + (0x14 * index)) "leat01" #8 // replace item
-      END
-
-      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*chan.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
-        WRITE_ASCII (itm_off + (0x14 * index)) "chan01" #8 // replace item
-      END
-
-      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*spli.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
-        WRITE_ASCII (itm_off + (0x14 * index)) "chan04" #8 // replace item
-      END
-
-      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*plah.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
-        WRITE_ASCII (itm_off + (0x14 * index)) "plat01" #8 // replace item
-      END
-
-      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*plaf.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
-        WRITE_ASCII (itm_off + (0x14 * index)) "plat01" #8 // replace item
-      END
-
-      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*arow.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
-        WRITE_ASCII (itm_off + (0x14 * index)) "arow01" #8 // replace item
-      END
-
-      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*dart.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
-        WRITE_ASCII (itm_off + (0x14 * index)) "dart01" #8 // replace item
-      END
-
-      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*bull.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
-        WRITE_ASCII (itm_off + (0x14 * index)) "bull01" #8 // replace item
-      END
-
-      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*bolt.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
-        WRITE_ASCII (itm_off + (0x14 * index)) "bolt01" #8 // replace item
-      END
-
-      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*dart.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
-        WRITE_ASCII (itm_off + (0x14 * index)) "dart01" #8 // replace item
-      END
-
-      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*potn.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
-        WRITE_ASCII (itm_off + (0x14 * index)) "potn08" #8 // replace item
-      END
-
-      PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*scrl.*" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
-        WRITE_ASCII (itm_off + (0x14 * index)) "misc17" #8 // replace item
-      END
-
-      // Brute force method to remove all other matches
-      // PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*\(staf\|sw1h\|sw2h\|dagg\|ax1h\|ax2h\|sper\|hamm\|halb\|blun\|scim\|waki\|kata\|sw3h\|mace\|shld\|shbu\|shlg\|shmd\|shsm\|xbow\|bow\|slng\|helm\|ioun\|cowl\|amul\|boot\|belt\|clck\|ring\|brac\|robe\|leat\|chan\|plat\|armr\|slea\|pelt\|hide\|chan\|spli\|plah\|plaf\|misc\|book\|bag\|potn\|arow\|dart\|bull\|bolt\).*" != 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find NOT item
-      //   WRITE_ASCII (itm_off + (0x14 * index)) "misc17" #8 // replace
-      // END
+        // Brute force method to remove all other matches
+        // PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*\(staf\|sw1h\|sw2h\|dagg\|ax1h\|ax2h\|sper\|hamm\|halb\|blun\|scim\|waki\|kata\|sw3h\|mace\|shld\|shbu\|shlg\|shmd\|shsm\|xbow\|bow\|slng\|helm\|ioun\|cowl\|amul\|boot\|belt\|clck\|ring\|brac\|robe\|leat\|chan\|plat\|armr\|slea\|pelt\|hide\|chan\|spli\|plah\|plaf\|misc\|book\|bag\|potn\|arow\|dart\|bull\|bolt\).*" != 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find NOT item
+        //   WRITE_ASCII (itm_off + (0x14 * index)) "misc17" #8 // replace
+        // END
 
       // END // End of the is_identified check
+      END // End of rx_keep IF
     END // End of the item loop
   END // End of the human check
 BUT_ONLY // end of items pass 1
