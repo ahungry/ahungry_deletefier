@@ -18,7 +18,7 @@ What percent of items would you like to have disappear (creatures, stores, and a
    99  = items have a 1 percent chance to be present
    100 = all items are deleted that aren't script creations/random npc loot (probably a bad idea!)
 
-Hint: On a megamod (200+ mods) I enjoy 75+ - it makes gear acquisition exciting again.
+Hint: On a megamod (200+ mods) I enjoy 90+ - it makes gear acquisition exciting again.
 
 Please enter your answer as an integer. [0-100]~
 ACTION_READLN ~del_per~
@@ -31,8 +31,12 @@ What percent of items would you like to have disappear?~
 END
 
 // Unconventional item formats from various mods out there
-OUTER_SPRINT rx_uncon_weap ".*\(sap\|cms\|dsswd\|cleaver\|misc75\|cmswq\|cmdaq\|polsw\|cmt\|cmax\|xstap\|soaitm\|flail\|wand\).*"
-OUTER_SPRINT rx_uncon_armr ".*\(rr#\|cmar\|bdbrd\|deitm\|anclk\|dsrng\|sheart\|macloc\|cmheal\|perrin\|armo\|xadvb\|bardic\|xseq\|cdia\|c0wl\|band\|xsorc\|c0mn\|rsenc\|cotwiz\|xbrbwiz\|circ\).*"
+OUTER_SPRINT rx_uncon_weap ".*\(sap\|cms\|cleaver\|misc75\|cmswq\|cmdaq\|polsw\|cmt\|cmax\|xstap\|soaitm\|flail\|wand\).*"
+
+OUTER_SPRINT rx_uncon_armr ".*\(rr#\|cmar\|bdbrd\|deitm\|anclk\|sheart\|macloc\|cmheal\|perrin\|armo\|xadvb\|bardic\|xseq\|cdia\|c0wl\|band\|xsorc\|c0mn\|rsenc\|cotwiz\|xbrbwiz\|circ\).*"
+
+// Some mod with DS at start of items adds a ton of powerful gear
+OUTER_SPRINT rx_uncon_ds "^ds.*"
 
 
 // https://gibberlings3.github.io/iesdp/file_formats/ie_formats/sto_v1.htm
@@ -63,6 +67,11 @@ COPY_EXISTING_REGEXP GLOB ~^.+\.sto$~ ~override~
 
     // Unconventional mod armor
     PATCH_IF ("%item%" STRING_COMPARE_REGEXP "%rx_uncon_armr%" = 0) AND RANDOM(1 100) <= %del_per% BEGIN // find item
+      WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
+    END
+
+    // Unconventional DS stuff
+    PATCH_IF ("%item%" STRING_COMPARE_REGEXP "%rx_uncon_ds%" = 0) AND RANDOM(1 100) <= %del_per% BEGIN // find item
       WRITE_ASCII (itm_off + (0x1c * index)) "misc17" #8 // replace item
     END
 
@@ -303,6 +312,11 @@ COPY_EXISTING_REGEXP GLOB ~^.+\.are$~ ~override~
 
     // Unconventional mod armor
     PATCH_IF ("%item%" STRING_COMPARE_REGEXP "%rx_uncon_armr%" = 0) AND RANDOM(1 100) <= %del_per% BEGIN // find item
+      WRITE_ASCII (itm_off + (0x14 * index)) "misc17" #8 // replace item
+    END
+
+    // Unconventional DS stuff
+    PATCH_IF ("%item%" STRING_COMPARE_REGEXP "%rx_uncon_ds%" = 0) AND RANDOM(1 100) <= %del_per% BEGIN // find item
       WRITE_ASCII (itm_off + (0x14 * index)) "misc17" #8 // replace item
     END
 
@@ -566,6 +580,11 @@ COPY_EXISTING_REGEXP GLOB ~^.+\.cre$~ ~override~
 
       // Unconventional mod armor
       PATCH_IF ("%item%" STRING_COMPARE_REGEXP "%rx_uncon_armr%" = 0) AND RANDOM(1 100) <= %del_per% BEGIN // find item
+        WRITE_ASCII (itm_off + (0x14 * index)) "misc17" #8 // replace item
+      END
+
+      // Unconventional DS stuff
+      PATCH_IF ("%item%" STRING_COMPARE_REGEXP "%rx_uncon_ds%" = 0) AND RANDOM(1 100) <= %del_per% BEGIN // find item
         WRITE_ASCII (itm_off + (0x14 * index)) "misc17" #8 // replace item
       END
 
