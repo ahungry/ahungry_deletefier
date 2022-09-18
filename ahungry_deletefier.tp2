@@ -48,6 +48,8 @@ What percent of store items would you like to have disappear?~
   ACTION_READLN ~del_per_sto~
 END
 
+PRINT ~Removing %del_per_sto% percent of store items, please be patient...~
+
 // https://gibberlings3.github.io/iesdp/file_formats/ie_formats/sto_v1.htm
 COPY_EXISTING_REGEXP GLOB ~^.+\.sto$~ ~override~
   // Iterate through items to see replaceable ones vs deleteables
@@ -313,6 +315,8 @@ Please enter your answer as an integer.
 What percent of area items would you like to have disappear?~
   ACTION_READLN ~del_per_are~
 END
+
+PRINT ~Removing %del_per_are% percent of area items, please be patient...~
 
 // https://gibberlings3.github.io/iesdp/file_formats/ie_formats/are_v1.htm
 COPY_EXISTING_REGEXP GLOB ~^.+\.are$~ ~override~
@@ -582,6 +586,7 @@ What percent of creature items would you like to have disappear?~
   ACTION_READLN ~del_per_cre~
 END
 
+PRINT ~Removing %del_per_cre% percent of creature items, please be patient (slow)...~
 
 // https://gibberlings3.github.io/iesdp/file_formats/ie_formats/cre_v1.htm
 COPY_EXISTING_REGEXP GLOB ~^.+\.cre$~ ~override~
