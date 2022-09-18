@@ -2,7 +2,7 @@ BACKUP ~ahungry_deletefier/backup~
 AUTHOR ~Ahungry~
 VERSION 1.0
 
-BEGIN ~Ahungry's Deletefier~
+BEGIN ~Ahungry's Deletefier~ DESIGNATED 1000 LABEL ahungry_deletefier_warning
 
 REQUIRE_PREDICATE (GAME_IS ~bgee bg2ee eet iwdee~) ~Game not supported.~
 
@@ -38,6 +38,8 @@ OUTER_SPRINT rx_uncon_armr ".*\(rr#\|cmar\|bdbrd\|deitm\|anclk\|sheart\|macloc\|
 // Some mod with DS at start of items adds a ton of powerful gear
 OUTER_SPRINT rx_uncon_ds "^ds.*"
 
+
+BEGIN ~Ahungry's Deletefier: Stores~ DESIGNATED 2000 LABEL ahungry_deletefier_stores
 
 // https://gibberlings3.github.io/iesdp/file_formats/ie_formats/sto_v1.htm
 COPY_EXISTING_REGEXP GLOB ~^.+\.sto$~ ~override~
@@ -287,6 +289,7 @@ BUT_ONLY // end of store pass 2
 
 
 
+BEGIN ~Ahungry's Deletefier: Areas~ DESIGNATED 3000 LABEL ahungry_deletefier_areas
 
 // https://gibberlings3.github.io/iesdp/file_formats/ie_formats/are_v1.htm
 COPY_EXISTING_REGEXP GLOB ~^.+\.are$~ ~override~
@@ -538,6 +541,7 @@ BUT_ONLY // End of areas pass 2
 
 
 
+BEGIN ~Ahungry's Deletefier: Creatures~ DESIGNATED 4000 LABEL ahungry_deletefier_creatures
 
 // https://gibberlings3.github.io/iesdp/file_formats/ie_formats/cre_v1.htm
 COPY_EXISTING_REGEXP GLOB ~^.+\.cre$~ ~override~
