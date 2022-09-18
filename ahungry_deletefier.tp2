@@ -845,6 +845,11 @@ COPY_EXISTING_REGEXP GLOB ~^.+\.cre$~ ~override~
           WRITE_ASCII (itm_off + (0x14 * index)) "misc17" #8 // replace item
         END
 
+        // Delete random treasure items with the usual probability check
+        PATCH_IF ("%item%" STRING_COMPARE_REGEXP "^rndtre" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
+          WRITE_ASCII (itm_off + (0x14 * index)) "misc17" #8 // replace item
+        END
+
         // Brute force method to remove all other matches
         // PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*\(staf\|sw1h\|sw2h\|dagg\|ax1h\|ax2h\|sper\|hamm\|halb\|blun\|scim\|waki\|kata\|sw3h\|mace\|shld\|shbu\|shlg\|shmd\|shsm\|xbow\|bow\|slng\|helm\|ioun\|cowl\|amul\|boot\|belt\|clck\|ring\|brac\|robe\|leat\|chan\|plat\|armr\|slea\|pelt\|hide\|chan\|spli\|plah\|plaf\|misc\|book\|bag\|potn\|arow\|dart\|bull\|bolt\)" != 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find NOT item
         //   WRITE_ASCII (itm_off + (0x14 * index)) "misc17" #8 // replace
@@ -857,5 +862,9 @@ COPY_EXISTING_REGEXP GLOB ~^.+\.cre$~ ~override~
 BUT_ONLY // end of items pass 1
 
 COPY_EXISTING_REGEXP GLOB ~^.+\.cre$~ ~override~
+  // Get rid of the PHer items we stubbed in
   LPF DELETE_CRE_ITEM STR_VAR item_to_delete = "misc17" END
+
+  // Get rid of all random treasures that would usually drop
+  // LPF DELETE_CRE_ITEM STR_VAR item_to_delete = "rndtre.." END
 BUT_ONLY // end of items pass 2
