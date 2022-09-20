@@ -6,7 +6,7 @@ item types into their base form given some probability.
 
 # NOTE
 
-Beta quality, I need to do some play throughs with this mod!
+Alpha quality, I need to do some play throughs with this mod!
 
 WARNING: You will NOT be able to complete certain quests as expected
 with this mod.  Accepting that will (perhaps) add some replayability -
