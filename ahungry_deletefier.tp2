@@ -459,7 +459,7 @@ COPY_EXISTING_REGEXP GLOB ~^.+\.are$~ ~override~
       END
 
       PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*amul" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
-        WRITE_ASCII (itm_off + (0x14 * index)) "amul01" #8 // replace item
+        WRITE_ASCII (itm_off + (0x14 * index)) "amul02" #8 // replace item
       END
 
       PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*boot" = 0) AND RANDOM(1 100) <= %del_per_are% BEGIN // find item
@@ -745,7 +745,7 @@ COPY_EXISTING_REGEXP GLOB ~^.+\.cre$~ ~override~
         END
 
         PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*amul" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
-          WRITE_ASCII (itm_off + (0x14 * index)) "amul01" #8 // replace item
+          WRITE_ASCII (itm_off + (0x14 * index)) "amul02" #8 // replace item
         END
 
         PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*boot" = 0) AND RANDOM(1 100) <= %del_per_cre% BEGIN // find item
