@@ -33,9 +33,9 @@ OUTER_SPRINT rx_uncon_ds "^ds"
 // List items we will always allow to remain (mostly basic things we're downgrading to)
 // This may also contain some quest specific gear we want to avoid deleting (in the last half of rx)
 // scrl3z = gorions, sclr75 = identify, scrl8c/scrlpet = stone to flesh
-OUTER_SPRINT rx_keep "^\(a7\|scrlnei\|t1g\|acqlet\|scrl2v\|scrl2w\|ag\|misc53\|misc87\|misc85\|t1sa\|ac\|l#sss\|l#sha\|l#ssfigu\|l#cir\|cmfood\|x#xz\|x#sil\|x#fai\|scrsec\|scrl3b\|scrl3i\|d5_ckit\|flrbelt1\|t1m2\|c#q13\|c#lchul1\|sw1h13\|scrltar\|scrl3z\|scrl75\|scrl8c\|scrlpet\|cdax2h1\|rr#bow02\|rr#sap01\|halb01\|sw2h01\|sw1h20\|sw1h46\|sw1h43\|sw1h48\|sw1h07\|sw1h04\|leat04\|leat01\|staf01\|ring19\|potn48\|ringjoia\|ringjos\|dagg01\|dagg06\|dagg07\|dagg19\|dagg08\|dagg05\|slng01\|ax1h01\|ax1h04\|sper01\|hamm01\|halb01\|blun01\|blun02\|blun04\|blun06\|shld05\|shld08\|shld09\|shld11\|shld15\|brac05\|belt05\|belt01\|shld16\|shld14\|shld13\|shld12\|shld10\|shld01\|shld04\|shld03\|xbow01\|xbow04\|bow01\|bow03\|bow05\|helm01\|helm02\|helm03\|chan01\|plat01\|chan04\|bull01\|arow01\|bolt01\|dart01\|potn08\|potn20\|c0samag\|c0sascr\|c0sapot\|sw1h12\)"
+OUTER_SPRINT rx_keep "^\(a7\|scrlnei\|amul14\|ring06\|t1g\|boot06\|acq\|scrlauto\|scrl2v\|scrl2w\|ag\|t1sa\|ac\|l#\|cmfood\|x#xz\|x#sil\|x#fai\|scrsec\|scrl2x\|scrl3b\|scrl3i\|d5_ckit\|flrbelt1\|t1m2\|c#q\|c#lc\|sw1h13\|scrltar\|scrl3z\|scrl75\|scrl8c\|scrlpet\|cdax2h1\|rr#bow02\|rr#sap01\|halb01\|sw2h01\|sw1h20\|sw1h46\|sw1h43\|sw1h48\|sw1h07\|sw1h04\|leat04\|leat01\|staf01\|ring19\|potn48\|ringjoia\|ringjos\|dagg01\|dagg06\|dagg07\|dagg19\|dagg08\|dagg05\|slng01\|ax1h01\|ax1h04\|sper01\|hamm01\|halb01\|blun01\|blun02\|blun04\|blun06\|shld05\|shld08\|shld09\|shld11\|shld15\|brac05\|belt05\|belt01\|shld16\|shld14\|shld13\|shld12\|shld10\|shld01\|shld04\|shld03\|xbow01\|xbow04\|bow01\|bow03\|bow05\|helm01\|helm02\|helm03\|chan01\|plat01\|chan04\|bull01\|arow01\|bolt01\|dart01\|potn08\|potn20\|c0\|sw1h12\)"
 
-OUTER_SPRINT rx_keep_2 "\(ammo\|case\|lett\|bag\)"
+OUTER_SPRINT rx_keep_2 "\(ammo\|case\|misc\|lett\|bag\)"
 
 BEGIN ~Stores~ DESIGNATED 2000 LABEL ahungry_deletefier_stores
 REQUIRE_PREDICATE (MOD_IS_INSTALLED ~ahungry_deletefier/ahungry_deletefier.tp2~ 1000) ""
