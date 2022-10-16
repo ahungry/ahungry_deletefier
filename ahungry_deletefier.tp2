@@ -419,7 +419,7 @@ COPY_EXISTING_REGEXP GLOB ~^.+\.cre$~ ~override~
 
       // Avoid removing basic items
       PATCH_IF ("%item%" STRING_COMPARE_REGEXP "%rx_keep%" = 1) BEGIN
-        PATCH_IF RANDOM(1 100) <= %del_per_cre%) BEGIN
+        PATCH_IF RANDOM(1 100) <= %del_per_cre% BEGIN
           PATCH_IF VARIABLE_IS_SET $enchanted_items("%item%") BEGIN
             WRITE_ASCII (itm_off + (0x14 * index)) "misc17" #8
 
