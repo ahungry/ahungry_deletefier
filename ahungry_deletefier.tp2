@@ -288,7 +288,7 @@ COPY_EXISTING_REGEXP GLOB ~^.+\.are$~ ~override~
 
           // clck handles cloaks AND robes for some reason...
           PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*clck" = 0)  BEGIN // find item
-          WRITE_ASCII (itm_off + (0x14 * index)) "misc17" #8 // replace item
+            WRITE_ASCII (itm_off + (0x14 * index)) "misc17" #8 // replace item
           END
 
           PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*ring" = 0)  BEGIN // find item
@@ -371,10 +371,10 @@ COPY_EXISTING_REGEXP GLOB ~^.+\.are$~ ~override~
         PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*scrl" = 0)  BEGIN // find item
           WRITE_ASCII (itm_off + (0x14 * index)) "misc17" #8 // replace item
         END
+
       END // End of random
     END // End of rx_keep IF
   END // End of area item loop
-
 BUT_ONLY // End of areas pass 1
 
 // https://gibberlings3.github.io/iesdp/file_formats/ie_formats/are_v1.htm
