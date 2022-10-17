@@ -38,17 +38,17 @@ OUTER_SPRINT rx_keep "^\(ascr7\|sec7\|bh\|ntp\|a7\|ntblun06\|potn23\|scrlnei\|am
 OUTER_SPRINT rx_keep_2 "\(key\|ammo\|case\|misc\|lett\|bag\)"
 
 PRINT ~
-Please choose a price cut off - any items that vendor above this cut off
-will be impacted by the deletefier, any below will not.
+Please choose a price cut off - any items that vendor above or equal to
+this cut off will be impacted by the deletefier, any below will not.
 
-Ex: If you choose 200, many level 1 and 2 scrolls, low level potions, and
+Ex: If you choose 100, many level 1 and 2 scrolls, low level potions, and
 quest items should remain untouched.~
 ACTION_READLN ~price_cutoff~
 
 OUTER_WHILE NOT(IS_AN_INT %price_cutoff%) BEGIN
   PRINT ~Your answer was not an integer.
 Please enter your answer as an integer.
-What is the price cut off? (200 is a good default)~
+What is the price cut off?~
   ACTION_READLN ~price_cutoff~
 END
 
@@ -60,23 +60,28 @@ ACTION_CLEAR_ARRAY enchanted_items
 // of 0 - one thing it does reasonably well is set a high price though
 // whereas (probably) most quest gear is of a lower price.
 COPY_EXISTING_REGEXP GLOB ~^.+\.itm$~ ~override~
+  READ_LONG  0x18 item_flags
   READ_SHORT 0x1c item_type
   READ_LONG  0x34 price
   READ_LONG  0x60 enchantment
 
-  // https://gibberlings3.github.io/iesdp/file_formats/ie_formats/itm_v1.htm#Header_ItemType
-  // Do not count these special things as enchanted
-  PATCH_IF (item_type != 0x0 AND item_type != 0x8 AND item_type != 0xd
-            AND item_type != 0x21 AND item_type != 0x22 AND item_type != 0x24
-            AND item_type != 0x25 AND item_type != 0x26 AND item_type != 0x31
-            AND item_type != 0x3b AND item_type != 0x46) BEGIN
-    // Then see if we have some enchantment or a high item price
-    // This should also ensure expensive/rare scrolls get removed while
-    // not removing basic ones for quests that don't tend to vend for much.
-    PATCH_IF (enchantment > 0 OR price > price_cutoff) BEGIN
-      TO_LOWER SOURCE_RES
-      PATCH_PRINT ~%SOURCE_RES% may be deletefied! (based on random chances later on)~
-      DEFINE_ASSOCIATIVE_ARRAY enchanted_items BEGIN "%SOURCE_RES%" => "%enchantment%" END
+  // https://gibberlings3.github.io/iesdp/file_formats/ie_formats/itm_v1.htm#Header_Flags
+  // Check and ensure quest bit isn't set
+  PATCH_IF (0 = (item_flags BAND 0x1)) BEGIN
+    // https://gibberlings3.github.io/iesdp/file_formats/ie_formats/itm_v1.htm#Header_ItemType
+    // Do not count these special things as enchanted (misc items and general junk)
+    PATCH_IF (item_type != 0x0 AND item_type != 0x8 AND item_type != 0xd
+              AND item_type != 0x21 AND item_type != 0x22 AND item_type != 0x24
+              AND item_type != 0x25 AND item_type != 0x26 AND item_type != 0x31
+              AND item_type != 0x3b AND item_type != 0x46) BEGIN
+      // Then see if we have some enchantment or a high item price
+      // This should also ensure expensive/rare scrolls get removed while
+      // not removing basic ones for quests that don't tend to vend for much.
+      PATCH_IF (enchantment > 0 OR price >= price_cutoff) BEGIN
+        TO_LOWER SOURCE_RES
+        PATCH_PRINT ~%SOURCE_RES% may be deletefied! (based on random chances later on)~
+        DEFINE_ASSOCIATIVE_ARRAY enchanted_items BEGIN "%SOURCE_RES%" => "%enchantment%" END
+      END
     END
   END
 BUT_ONLY // end of enchantment check
