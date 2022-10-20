@@ -33,9 +33,27 @@ OUTER_SPRINT rx_uncon_ds "^ds"
 // List items we will always allow to remain (mostly basic things we're downgrading to)
 // This may also contain some quest specific gear we want to avoid deleting (in the last half of rx)
 // scrl3z = gorions, sclr75 = identify, scrl8c/scrlpet = stone to flesh
-OUTER_SPRINT rx_keep "^\(ascr7\|sec7\|bh\|ntp\|a7\|ntblun06\|potn23\|scrlnei\|amul13co\|amul14\|ring06\|t1g\|boot06\|acq\|scrlauto\|scrl2y\|scrl2v\|scrl2w\|ag\|t1sa\|ac\|l#\|cmring05\|cmfood\|x#xz\|x#sil\|x#fai\|scrsec\|scrl2x\|scrl3b\|scrl3i\|d5_ckit\|flrbelt1\|t1m2\|c#q\|c#lc\|sw1h13\|scrltar\|scrl3z\|scrl75\|scrl8c\|scrlpet\|cdax2h1\|rr#bow02\|rr#sap01\|halb01\|sw2h01\|sw1h20\|sw1h46\|sw1h43\|sw1h48\|sw1h07\|sw1h04\|leat04\|leat01\|staf01\|ring19\|potn48\|ringjoia\|ringjos\|dagg01\|dagg06\|dagg07\|dagg19\|dagg08\|dagg05\|slng01\|ax1h01\|ax1h04\|sper01\|hamm01\|halb01\|blun01\|blun02\|blun04\|blun06\|shld05\|shld08\|shld09\|shld11\|shld15\|brac05\|belt05\|belt01\|shld16\|shld14\|shld13\|shld12\|shld10\|shld01\|shld04\|shld03\|xbow01\|xbow04\|bow01\|bow03\|bow05\|helm01\|helm02\|helm03\|chan01\|plat01\|chan04\|bull01\|arow01\|bolt01\|dart01\|potn08\|potn20\|c0\|sw1h12\)"
+// OUTER_SPRINT rx_keep "^\(ascr7\|sec7\|bh\|ntp\|a7\|ntblun06\|potn23\|scrlnei\|amul13co\|amul14\|ring06\|t1g\|boot06\|acq\|scrlauto\|scrl2y\|scrl2v\|scrl2w\|ag\|t1sa\|ac\|l#\|cmring05\|cmfood\|x#xz\|x#sil\|x#fai\|scrsec\|scrl2x\|scrl3b\|scrl3i\|d5_ckit\|flrbelt1\|t1m2\|c#q\|c#lc\|sw1h13\|scrltar\|scrl3z\|scrl75\|scrl8c\|scrlpet\|cdax2h1\|rr#bow02\|rr#sap01\|halb01\|sw2h01\|sw1h20\|sw1h46\|sw1h43\|sw1h48\|sw1h07\|sw1h04\|leat04\|leat01\|staf01\|ring19\|potn48\|ringjoia\|ringjos\|dagg01\|dagg06\|dagg07\|dagg19\|dagg08\|dagg05\|slng01\|ax1h01\|ax1h04\|sper01\|hamm01\|halb01\|blun01\|blun02\|blun04\|blun06\|shld05\|shld08\|shld09\|shld11\|shld15\|brac05\|belt05\|belt01\|shld16\|shld14\|shld13\|shld12\|shld10\|shld01\|shld04\|shld03\|xbow01\|xbow04\|bow01\|bow03\|bow05\|helm01\|helm02\|helm03\|chan01\|plat01\|chan04\|bull01\|arow01\|bolt01\|dart01\|potn08\|potn20\|c0\|sw1h12\)"
+OUTER_SPRINT rx_keep "^ZZZZZZZZZZZZZZZ$"
 
 OUTER_SPRINT rx_keep_2 "\(key\|ammo\|case\|misc\|lett\|bag\)"
+
+// We need to get the list of joinable NPCs and ensure we don't
+// set any of their gear as undroppable (maybe we can still make
+// some of it disappear though)
+COPY_EXISTING_REGEXP GLOB ~^.+\.gam~ ~override~
+  SET npc_size = 0x158 + 8
+  READ_LONG 0x30 npc_off
+  READ_LONG 0x34 npc_count
+
+  TO_LOWER SOURCE_RES
+  PATCH_PRINT ~Looking at %SOURCE_RES% - npc count is: %npc_count%~
+
+  FOR (index = 0 ; index < npc_count ; ++index) BEGIN // searches through party members
+    READ_ASCII (npc_off + (npc_size * index) + 0xc) npc_name
+    PATCH_PRINT ~%npc_name% detected in baldur.gam!~
+  END
+BUT_ONLY
 
 PRINT ~
 Please choose a price cut off - any items that vendor above or equal to
@@ -448,6 +466,7 @@ END
 
 PRINT ~Removing %del_per_cre% percent of creature items, please be patient (slow)...~
 
+// https://github.com/Gibberlings3/EE_Fixpack/blob/master/eefixpack/files/lib/cd_functions.tpa#L342
 // https://gibberlings3.github.io/iesdp/file_formats/ie_formats/cre_v1.htm
 COPY_EXISTING_REGEXP GLOB ~^.+\.cre$~ ~override~
   // Iterate through items to see replaceable ones vs deleteables
@@ -467,227 +486,230 @@ COPY_EXISTING_REGEXP GLOB ~^.+\.cre$~ ~override~
       PATCH_IF ("%item%" STRING_COMPARE_REGEXP "%rx_keep%" = 1) BEGIN
         PATCH_IF (RANDOM(1 100) <= %del_per_cre%) BEGIN
           PATCH_IF (VARIABLE_IS_SET $enchanted_items("%item%")) BEGIN
-            WRITE_ASCII (itm_off + (0x14 * index)) "misc17" #8
+            // flag_undroppable equivalent
+            WRITE_LONG (itm_off + (0x14 * index) + 0x10) (THIS BOR BIT3)
 
-            PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*staf" = 0) BEGIN // find staff item
-              WRITE_ASCII (itm_off + (0x14 * index)) "staf01" #8 // replace with staf01
-            END
+            // WRITE_ASCII (itm_off + (0x14 * index)) "misc17" #8
 
-            PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*sw1h" = 0) BEGIN // find item
-              WRITE_ASCII (itm_off + (0x14 * index)) "sw1h01" #8 // replace item
-            END
+            // PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*staf" = 0) BEGIN // find staff item
+            //   WRITE_ASCII (itm_off + (0x14 * index)) "staf01" #8 // replace with staf01
+            // END
 
-            // Unconventional mod weapons
-            PATCH_IF ("%item%" STRING_COMPARE_REGEXP "%rx_uncon_weap%" = 0) BEGIN // find item
-              WRITE_ASCII (itm_off + (0x14 * index)) "sw1h01" #8 // replace item
-            END
+            // PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*sw1h" = 0) BEGIN // find item
+            //   WRITE_ASCII (itm_off + (0x14 * index)) "sw1h01" #8 // replace item
+            // END
 
-            // Unconventional mod armor
-            PATCH_IF ("%item%" STRING_COMPARE_REGEXP "%rx_uncon_armr%" = 0) BEGIN // find item
-              WRITE_ASCII (itm_off + (0x14 * index)) "misc17" #8 // replace item
-            END
+            // // Unconventional mod weapons
+            // PATCH_IF ("%item%" STRING_COMPARE_REGEXP "%rx_uncon_weap%" = 0) BEGIN // find item
+            //   WRITE_ASCII (itm_off + (0x14 * index)) "sw1h01" #8 // replace item
+            // END
 
-            // Unconventional DS stuff
-            PATCH_IF ("%item%" STRING_COMPARE_REGEXP "%rx_uncon_ds%" = 0) BEGIN // find item
-              WRITE_ASCII (itm_off + (0x14 * index)) "misc17" #8 // replace item
-            END
+            // // Unconventional mod armor
+            // PATCH_IF ("%item%" STRING_COMPARE_REGEXP "%rx_uncon_armr%" = 0) BEGIN // find item
+            //   WRITE_ASCII (itm_off + (0x14 * index)) "misc17" #8 // replace item
+            // END
 
-            PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*sw2h" = 0) BEGIN // find item
-              WRITE_ASCII (itm_off + (0x14 * index)) "sw2h01" #8 // replace item
-            END
+            // // Unconventional DS stuff
+            // PATCH_IF ("%item%" STRING_COMPARE_REGEXP "%rx_uncon_ds%" = 0) BEGIN // find item
+            //   WRITE_ASCII (itm_off + (0x14 * index)) "misc17" #8 // replace item
+            // END
 
-            PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*dagg" = 0) BEGIN // find item
-              WRITE_ASCII (itm_off + (0x14 * index)) "dagg01" #8 // replace item
-            END
+            // PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*sw2h" = 0) BEGIN // find item
+            //   WRITE_ASCII (itm_off + (0x14 * index)) "sw2h01" #8 // replace item
+            // END
 
-            PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*ax1h" = 0) BEGIN // find item
-              WRITE_ASCII (itm_off + (0x14 * index)) "ax1h01" #8 // replace item
-            END
+            // PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*dagg" = 0) BEGIN // find item
+            //   WRITE_ASCII (itm_off + (0x14 * index)) "dagg01" #8 // replace item
+            // END
 
-            PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*ax2h" = 0) BEGIN // find item
-              WRITE_ASCII (itm_off + (0x14 * index)) "ax1h01" #8 // replace item
-            END
+            // PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*ax1h" = 0) BEGIN // find item
+            //   WRITE_ASCII (itm_off + (0x14 * index)) "ax1h01" #8 // replace item
+            // END
 
-            PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*sper" = 0) BEGIN // find item
-              WRITE_ASCII (itm_off + (0x14 * index)) "sper01" #8 // replace item
-            END
+            // PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*ax2h" = 0) BEGIN // find item
+            //   WRITE_ASCII (itm_off + (0x14 * index)) "ax1h01" #8 // replace item
+            // END
 
-            PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*hamm" = 0) BEGIN // find item
-              WRITE_ASCII (itm_off + (0x14 * index)) "hamm01" #8 // replace item
-            END
+            // PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*sper" = 0) BEGIN // find item
+            //   WRITE_ASCII (itm_off + (0x14 * index)) "sper01" #8 // replace item
+            // END
 
-            PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*halb" = 0) BEGIN // find item
-              WRITE_ASCII (itm_off + (0x14 * index)) "halb01" #8 // replace item
-            END
+            // PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*hamm" = 0) BEGIN // find item
+            //   WRITE_ASCII (itm_off + (0x14 * index)) "hamm01" #8 // replace item
+            // END
 
-            PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*blun" = 0) BEGIN // find item
-              WRITE_ASCII (itm_off + (0x14 * index)) "blun01" #8 // replace item
-            END
+            // PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*halb" = 0) BEGIN // find item
+            //   WRITE_ASCII (itm_off + (0x14 * index)) "halb01" #8 // replace item
+            // END
 
-            PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*scim" = 0) BEGIN // find item
-              WRITE_ASCII (itm_off + (0x14 * index)) "sw1h04" #8 // replace item
-            END
+            // PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*blun" = 0) BEGIN // find item
+            //   WRITE_ASCII (itm_off + (0x14 * index)) "blun01" #8 // replace item
+            // END
 
-            PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*waki" = 0) BEGIN // find item
-              WRITE_ASCII (itm_off + (0x14 * index)) "sw1h04" #8 // replace item
-            END
+            // PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*scim" = 0) BEGIN // find item
+            //   WRITE_ASCII (itm_off + (0x14 * index)) "sw1h04" #8 // replace item
+            // END
 
-            PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*kata" = 0) BEGIN // find item
-              WRITE_ASCII (itm_off + (0x14 * index)) "sw1h04" #8 // replace item
-            END
+            // PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*waki" = 0) BEGIN // find item
+            //   WRITE_ASCII (itm_off + (0x14 * index)) "sw1h04" #8 // replace item
+            // END
 
-            PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*sw3h" = 0) BEGIN // find item
-              WRITE_ASCII (itm_off + (0x14 * index)) "sw1h04" #8 // replace item
-            END
+            // PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*kata" = 0) BEGIN // find item
+            //   WRITE_ASCII (itm_off + (0x14 * index)) "sw1h04" #8 // replace item
+            // END
 
-            PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*mace" = 0) BEGIN // find item
-              WRITE_ASCII (itm_off + (0x14 * index)) "blun04" #8 // replace item
-            END
+            // PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*sw3h" = 0) BEGIN // find item
+            //   WRITE_ASCII (itm_off + (0x14 * index)) "sw1h04" #8 // replace item
+            // END
 
-            PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*shield" = 0) BEGIN // find item
-              WRITE_ASCII (itm_off + (0x14 * index)) "shld01" #8 // replace item
-            END
+            // PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*mace" = 0) BEGIN // find item
+            //   WRITE_ASCII (itm_off + (0x14 * index)) "blun04" #8 // replace item
+            // END
 
-            PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*shld" = 0) BEGIN // find item
-              WRITE_ASCII (itm_off + (0x14 * index)) "shld01" #8 // replace item
-            END
+            // PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*shield" = 0) BEGIN // find item
+            //   WRITE_ASCII (itm_off + (0x14 * index)) "shld01" #8 // replace item
+            // END
 
-            PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*shbu" = 0) BEGIN // find item
-              WRITE_ASCII (itm_off + (0x14 * index)) "shld08" #8 // replace item
-            END
+            // PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*shld" = 0) BEGIN // find item
+            //   WRITE_ASCII (itm_off + (0x14 * index)) "shld01" #8 // replace item
+            // END
 
-            PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*shlg" = 0) BEGIN // find item
-              WRITE_ASCII (itm_off + (0x14 * index)) "shld04" #8 // replace item
-            END
+            // PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*shbu" = 0) BEGIN // find item
+            //   WRITE_ASCII (itm_off + (0x14 * index)) "shld08" #8 // replace item
+            // END
 
-            PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*shmd" = 0) BEGIN // find item
-              WRITE_ASCII (itm_off + (0x14 * index)) "shld03" #8 // replace item
-            END
+            // PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*shlg" = 0) BEGIN // find item
+            //   WRITE_ASCII (itm_off + (0x14 * index)) "shld04" #8 // replace item
+            // END
 
-            PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*shsm" = 0) BEGIN // find item
-              WRITE_ASCII (itm_off + (0x14 * index)) "shld01" #8 // replace item
-            END
+            // PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*shmd" = 0) BEGIN // find item
+            //   WRITE_ASCII (itm_off + (0x14 * index)) "shld03" #8 // replace item
+            // END
 
-            PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*xbow" = 0) BEGIN // find item
-              WRITE_ASCII (itm_off + (0x14 * index)) "xbow01" #8 // replace item
-            END
+            // PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*shsm" = 0) BEGIN // find item
+            //   WRITE_ASCII (itm_off + (0x14 * index)) "shld01" #8 // replace item
+            // END
 
-            PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*bow" = 0) BEGIN // find item
-              WRITE_ASCII (itm_off + (0x14 * index)) "bow05" #8 // replace item
-            END
+            // PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*xbow" = 0) BEGIN // find item
+            //   WRITE_ASCII (itm_off + (0x14 * index)) "xbow01" #8 // replace item
+            // END
 
-            PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*slng" = 0) BEGIN // find item
-              WRITE_ASCII (itm_off + (0x14 * index)) "slng01" #8 // replace item
-            END
+            // PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*bow" = 0) BEGIN // find item
+            //   WRITE_ASCII (itm_off + (0x14 * index)) "bow05" #8 // replace item
+            // END
 
-            PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*hel" = 0) BEGIN // find item
-              WRITE_ASCII (itm_off + (0x14 * index)) "helm01" #8 // replace item
-            END
+            // PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*slng" = 0) BEGIN // find item
+            //   WRITE_ASCII (itm_off + (0x14 * index)) "slng01" #8 // replace item
+            // END
 
-            PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*helm" = 0) BEGIN // find item
-              WRITE_ASCII (itm_off + (0x14 * index)) "helm01" #8 // replace item
-            END
+            // PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*hel" = 0) BEGIN // find item
+            //   WRITE_ASCII (itm_off + (0x14 * index)) "helm01" #8 // replace item
+            // END
 
-            PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*ioun" = 0) BEGIN // find item
-              WRITE_ASCII (itm_off + (0x14 * index)) "helm01" #8 // replace item
-            END
+            // PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*helm" = 0) BEGIN // find item
+            //   WRITE_ASCII (itm_off + (0x14 * index)) "helm01" #8 // replace item
+            // END
 
-            PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*cowl" = 0) BEGIN // find item
-              WRITE_ASCII (itm_off + (0x14 * index)) "helm01" #8 // replace item
-            END
+            // PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*ioun" = 0) BEGIN // find item
+            //   WRITE_ASCII (itm_off + (0x14 * index)) "helm01" #8 // replace item
+            // END
 
-            PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*amul" = 0) BEGIN // find item
-              WRITE_ASCII (itm_off + (0x14 * index)) "amul02" #8 // replace item
-            END
+            // PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*cowl" = 0) BEGIN // find item
+            //   WRITE_ASCII (itm_off + (0x14 * index)) "helm01" #8 // replace item
+            // END
 
-            PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*boot" = 0) BEGIN // find item
-              WRITE_ASCII (itm_off + (0x14 * index)) "misc17" #8 // replace item
-            END
+            // PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*amul" = 0) BEGIN // find item
+            //   WRITE_ASCII (itm_off + (0x14 * index)) "amul02" #8 // replace item
+            // END
 
-            PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*belt" = 0) BEGIN // find item
-              WRITE_ASCII (itm_off + (0x14 * index)) "belt01" #8 // replace item
-            END
+            // PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*boot" = 0) BEGIN // find item
+            //   WRITE_ASCII (itm_off + (0x14 * index)) "misc17" #8 // replace item
+            // END
 
-            // clck handles cloaks AND robes for some reason...
-            PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*clck" = 0) BEGIN // find item
-              WRITE_ASCII (itm_off + (0x14 * index)) "misc17" #8 // replace item
-            END
+            // PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*belt" = 0) BEGIN // find item
+            //   WRITE_ASCII (itm_off + (0x14 * index)) "belt01" #8 // replace item
+            // END
 
-            PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*ring" = 0) BEGIN // find item
-              WRITE_ASCII (itm_off + (0x14 * index)) "ring01" #8 // replace item
-            END
+            // // clck handles cloaks AND robes for some reason...
+            // PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*clck" = 0) BEGIN // find item
+            //   WRITE_ASCII (itm_off + (0x14 * index)) "misc17" #8 // replace item
+            // END
 
-            PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*brac" = 0) BEGIN // find item
-              WRITE_ASCII (itm_off + (0x14 * index)) "brac05" #8 // replace item
-            END
+            // PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*ring" = 0) BEGIN // find item
+            //   WRITE_ASCII (itm_off + (0x14 * index)) "ring01" #8 // replace item
+            // END
 
-            PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*robe" = 0) BEGIN // find item
-              WRITE_ASCII (itm_off + (0x14 * index)) "clck11" #8 // replace item
-            END
+            // PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*brac" = 0) BEGIN // find item
+            //   WRITE_ASCII (itm_off + (0x14 * index)) "brac05" #8 // replace item
+            // END
 
-            PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*leat" = 0) BEGIN // find item
-              WRITE_ASCII (itm_off + (0x14 * index)) "leat01" #8 // replace item
-            END
+            // PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*robe" = 0) BEGIN // find item
+            //   WRITE_ASCII (itm_off + (0x14 * index)) "clck11" #8 // replace item
+            // END
 
-            PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*chan" = 0) BEGIN // find item
-              WRITE_ASCII (itm_off + (0x14 * index)) "chan01" #8 // replace item
-            END
+            // PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*leat" = 0) BEGIN // find item
+            //   WRITE_ASCII (itm_off + (0x14 * index)) "leat01" #8 // replace item
+            // END
 
-            PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*plat" = 0) BEGIN // find item
-              WRITE_ASCII (itm_off + (0x14 * index)) "plat01" #8 // replace item
-            END
+            // PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*chan" = 0) BEGIN // find item
+            //   WRITE_ASCII (itm_off + (0x14 * index)) "chan01" #8 // replace item
+            // END
 
-            PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*armr" = 0) BEGIN // find item
-              WRITE_ASCII (itm_off + (0x14 * index)) "leat01" #8 // replace item
-            END
+            // PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*plat" = 0) BEGIN // find item
+            //   WRITE_ASCII (itm_off + (0x14 * index)) "plat01" #8 // replace item
+            // END
 
-            PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*slea" = 0) BEGIN // find item
-              WRITE_ASCII (itm_off + (0x14 * index)) "leat01" #8 // replace item
-            END
+            // PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*armr" = 0) BEGIN // find item
+            //   WRITE_ASCII (itm_off + (0x14 * index)) "leat01" #8 // replace item
+            // END
 
-            PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*pelt" = 0) BEGIN // find item
-              WRITE_ASCII (itm_off + (0x14 * index)) "leat01" #8 // replace item
-            END
+            // PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*slea" = 0) BEGIN // find item
+            //   WRITE_ASCII (itm_off + (0x14 * index)) "leat01" #8 // replace item
+            // END
 
-            PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*hide" = 0) BEGIN // find item
-              WRITE_ASCII (itm_off + (0x14 * index)) "leat01" #8 // replace item
-            END
+            // PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*pelt" = 0) BEGIN // find item
+            //   WRITE_ASCII (itm_off + (0x14 * index)) "leat01" #8 // replace item
+            // END
 
-            PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*chan" = 0) BEGIN // find item
-              WRITE_ASCII (itm_off + (0x14 * index)) "chan01" #8 // replace item
-            END
+            // PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*hide" = 0) BEGIN // find item
+            //   WRITE_ASCII (itm_off + (0x14 * index)) "leat01" #8 // replace item
+            // END
 
-            PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*spli" = 0) BEGIN // find item
-              WRITE_ASCII (itm_off + (0x14 * index)) "chan04" #8 // replace item
-            END
+            // PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*chan" = 0) BEGIN // find item
+            //   WRITE_ASCII (itm_off + (0x14 * index)) "chan01" #8 // replace item
+            // END
 
-            PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*plah" = 0) BEGIN // find item
-              WRITE_ASCII (itm_off + (0x14 * index)) "plat01" #8 // replace item
-            END
+            // PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*spli" = 0) BEGIN // find item
+            //   WRITE_ASCII (itm_off + (0x14 * index)) "chan04" #8 // replace item
+            // END
 
-            PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*plaf" = 0) BEGIN // find item
-              WRITE_ASCII (itm_off + (0x14 * index)) "plat01" #8 // replace item
-            END
+            // PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*plah" = 0) BEGIN // find item
+            //   WRITE_ASCII (itm_off + (0x14 * index)) "plat01" #8 // replace item
+            // END
 
-            PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*arow" = 0) BEGIN // find item
-              WRITE_ASCII (itm_off + (0x14 * index)) "arow01" #8 // replace item
-            END
+            // PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*plaf" = 0) BEGIN // find item
+            //   WRITE_ASCII (itm_off + (0x14 * index)) "plat01" #8 // replace item
+            // END
 
-            PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*dart" = 0) BEGIN // find item
-              WRITE_ASCII (itm_off + (0x14 * index)) "dart01" #8 // replace item
-            END
+            // PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*arow" = 0) BEGIN // find item
+            //   WRITE_ASCII (itm_off + (0x14 * index)) "arow01" #8 // replace item
+            // END
 
-            PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*bull" = 0) BEGIN // find item
-              WRITE_ASCII (itm_off + (0x14 * index)) "bull01" #8 // replace item
-            END
+            // PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*dart" = 0) BEGIN // find item
+            //   WRITE_ASCII (itm_off + (0x14 * index)) "dart01" #8 // replace item
+            // END
 
-            PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*bolt" = 0) BEGIN // find item
-              WRITE_ASCII (itm_off + (0x14 * index)) "bolt01" #8 // replace item
-            END
+            // PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*bull" = 0) BEGIN // find item
+            //   WRITE_ASCII (itm_off + (0x14 * index)) "bull01" #8 // replace item
+            // END
 
-            PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*dart" = 0) BEGIN // find item
-              WRITE_ASCII (itm_off + (0x14 * index)) "dart01" #8 // replace item
-            END
+            // PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*bolt" = 0) BEGIN // find item
+            //   WRITE_ASCII (itm_off + (0x14 * index)) "bolt01" #8 // replace item
+            // END
+
+            // PATCH_IF ("%item%" STRING_COMPARE_REGEXP ".*dart" = 0) BEGIN // find item
+            //   WRITE_ASCII (itm_off + (0x14 * index)) "dart01" #8 // replace item
+            // END
 
           END // end of enchanted
 
