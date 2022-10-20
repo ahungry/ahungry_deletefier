@@ -33,7 +33,8 @@ OUTER_SPRINT rx_uncon_ds "^ds"
 // List items we will always allow to remain (mostly basic things we're downgrading to)
 // This may also contain some quest specific gear we want to avoid deleting (in the last half of rx)
 // scrl3z = gorions, sclr75 = identify, scrl8c/scrlpet = stone to flesh
-OUTER_SPRINT rx_keep "^\(ascr7\|sec7\|bh\|ntp\|a7\|ntblun06\|potn23\|scrlnei\|amul13co\|amul14\|ring06\|t1g\|boot06\|acq\|scrlauto\|scrl2y\|scrl2v\|scrl2w\|ag\|t1sa\|ac\|l#\|cmring05\|cmfood\|x#xz\|x#sil\|x#fai\|scrsec\|scrl2x\|scrl3b\|scrl3i\|d5_ckit\|flrbelt1\|t1m2\|c#q\|c#lc\|sw1h13\|scrltar\|scrl3z\|scrl75\|scrl8c\|scrlpet\|cdax2h1\|rr#bow02\|rr#sap01\|halb01\|sw2h01\|sw1h20\|sw1h46\|sw1h43\|sw1h48\|sw1h07\|sw1h04\|leat04\|leat01\|staf01\|ring19\|potn48\|ringjoia\|ringjos\|dagg01\|dagg06\|dagg07\|dagg19\|dagg08\|dagg05\|slng01\|ax1h01\|ax1h04\|sper01\|hamm01\|halb01\|blun01\|blun02\|blun04\|blun06\|shld05\|shld08\|shld09\|shld11\|shld15\|brac05\|belt05\|belt01\|shld16\|shld14\|shld13\|shld12\|shld10\|shld01\|shld04\|shld03\|xbow01\|xbow04\|bow01\|bow03\|bow05\|helm01\|helm02\|helm03\|chan01\|plat01\|chan04\|bull01\|arow01\|bolt01\|dart01\|potn08\|potn20\|c0\|sw1h12\)"
+// OUTER_SPRINT rx_keep "^\(ascr7\|sec7\|bh\|ntp\|a7\|ntblun06\|potn23\|scrlnei\|amul13co\|amul14\|ring06\|t1g\|boot06\|acq\|scrlauto\|scrl2y\|scrl2v\|scrl2w\|ag\|t1sa\|ac\|l#\|cmring05\|cmfood\|x#xz\|x#sil\|x#fai\|scrsec\|scrl2x\|scrl3b\|scrl3i\|d5_ckit\|flrbelt1\|t1m2\|c#q\|c#lc\|sw1h13\|scrltar\|scrl3z\|scrl75\|scrl8c\|scrlpet\|cdax2h1\|rr#bow02\|rr#sap01\|halb01\|sw2h01\|sw1h20\|sw1h46\|sw1h43\|sw1h48\|sw1h07\|sw1h04\|leat04\|leat01\|staf01\|ring19\|potn48\|ringjoia\|ringjos\|dagg01\|dagg06\|dagg07\|dagg19\|dagg08\|dagg05\|slng01\|ax1h01\|ax1h04\|sper01\|hamm01\|halb01\|blun01\|blun02\|blun04\|blun06\|shld05\|shld08\|shld09\|shld11\|shld15\|brac05\|belt05\|belt01\|shld16\|shld14\|shld13\|shld12\|shld10\|shld01\|shld04\|shld03\|xbow01\|xbow04\|bow01\|bow03\|bow05\|helm01\|helm02\|helm03\|chan01\|plat01\|chan04\|bull01\|arow01\|bolt01\|dart01\|potn08\|potn20\|c0\|sw1h12\)"
+OUTER_SPRINT rx_keep "^ZZZZZZZZ$"
 
 OUTER_SPRINT rx_keep_2 "\(key\|ammo\|case\|misc\|lett\|bag\)"
 
@@ -187,12 +188,13 @@ COPY_EXISTING_REGEXP GLOB ~^.+\.sto$~ ~override~
       END // End of rand
     END // End of rx_keep IF
   END // End of item loop
+  LPF DELETE_STORE_ITEM STR_VAR item_to_delete = "misc17" END
 BUT_ONLY // end of store pass 1
 
-// A second pass on store to remove the misc17 that was added first time around
-COPY_EXISTING_REGEXP GLOB ~^.+\.sto$~ ~override~
-  LPF DELETE_STORE_ITEM STR_VAR item_to_delete = "misc17" END
-BUT_ONLY // end of store pass 2
+// // A second pass on store to remove the misc17 that was added first time around
+// COPY_EXISTING_REGEXP GLOB ~^.+\.sto$~ ~override~
+//   LPF DELETE_STORE_ITEM STR_VAR item_to_delete = "misc17" END
+// BUT_ONLY // end of store pass 2
 
 
 
@@ -462,17 +464,18 @@ COPY_EXISTING_REGEXP GLOB ~^.+\.are$~ ~override~
       END // End of random
     END // End of rx_keep IF
   END // End of area item loop
+  LPF DELETE_AREA_ITEM STR_VAR item_to_delete = "misc17" END
 BUT_ONLY // End of areas pass 1
 
-// https://gibberlings3.github.io/iesdp/file_formats/ie_formats/are_v1.htm
-COPY_EXISTING_REGEXP GLOB ~^.+\.are$~ ~override~
-  LPF DELETE_AREA_ITEM STR_VAR item_to_delete = "misc17" END
-BUT_ONLY // End of areas pass 2
+// // https://gibberlings3.github.io/iesdp/file_formats/ie_formats/are_v1.htm
+// COPY_EXISTING_REGEXP GLOB ~^.+\.are$~ ~override~
+//   LPF DELETE_AREA_ITEM STR_VAR item_to_delete = "misc17" END
+// BUT_ONLY // End of areas pass 2
 
 
 
 
-BEGIN ~Creatures~ DESIGNATED 4000 LABEL ahungry_deletefier_creatures
+BEGIN ~Creatures and Joinable NPCs~ DESIGNATED 4000 LABEL ahungry_deletefier_creatures
 REQUIRE_PREDICATE (MOD_IS_INSTALLED ~ahungry_deletefier/ahungry_deletefier.tp2~ 1000) ""
 
 PRINT ~
@@ -503,6 +506,27 @@ COPY_EXISTING_REGEXP GLOB ~^.+\.cre$~ ~override~
   // Instead of human check, just use the npc array and non-droppable flag
 
   //PATCH_IF (general_byte = 0x1) BEGIN
+
+  // If an NPC, we'll remove some items which aren't themselves
+  // flagged as undroppable (Edwin Amulet, Boo etc.)
+  PATCH_IF (VARIABLE_IS_SET $joinable_npcs("%SOURCE_RES%")) BEGIN
+    FOR (index = 0 ; index < itm_num ; ++index) BEGIN // searches through items
+      READ_ASCII (itm_off + (0x14 * index)) item
+      TO_LOWER item
+
+      PATCH_IF (RANDOM(1 100) <= %del_per_cre%) BEGIN
+        PATCH_IF (VARIABLE_IS_SET $enchanted_items("%item%")) BEGIN
+          READ_LONG (itm_off + (0x14 * index) + 0x10) itm_flags
+          PATCH_IF (0 = (itm_flags BAND BIT3)) BEGIN
+            WRITE_ASCII (itm_off + (0x14 * index)) "misc17" #8
+          END
+        END
+      END
+    END
+  END
+
+  // If NOT an NPC, we'll just flag items as undroppable to simulate
+  // them being deleted, without lowering the power level
   PATCH_IF (!VARIABLE_IS_SET $joinable_npcs("%SOURCE_RES%")) BEGIN
     FOR (index = 0 ; index < itm_num ; ++index) BEGIN // searches through items
       READ_ASCII (itm_off + (0x14 * index)) item
@@ -759,13 +783,14 @@ COPY_EXISTING_REGEXP GLOB ~^.+\.cre$~ ~override~
         END // End of rand
       END // End of rx_keep IF
     END // End of the item loop
-  END // End of the human check
+  END // End of the joinable check
+  LPF DELETE_CRE_ITEM STR_VAR item_to_delete = "misc17" END
 BUT_ONLY // end of items pass 1
 
-COPY_EXISTING_REGEXP GLOB ~^.+\.cre$~ ~override~
-  // Get rid of the PHer items we stubbed in
-  LPF DELETE_CRE_ITEM STR_VAR item_to_delete = "misc17" END
+// COPY_EXISTING_REGEXP GLOB ~^.+\.cre$~ ~override~
+//   // Get rid of the PHer items we stubbed in
+//   LPF DELETE_CRE_ITEM STR_VAR item_to_delete = "misc17" END
 
-  // Get rid of all random treasures that would usually drop
-  // LPF DELETE_CRE_ITEM STR_VAR item_to_delete = "rndtre.." END
-BUT_ONLY // end of items pass 2
+//   // Get rid of all random treasures that would usually drop
+//   // LPF DELETE_CRE_ITEM STR_VAR item_to_delete = "rndtre.." END
+// BUT_ONLY // end of items pass 2
