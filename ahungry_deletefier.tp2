@@ -511,21 +511,25 @@ COPY_EXISTING_REGEXP GLOB ~^.+\.cre$~ ~override~
 
   // If an NPC, we'll remove some items which aren't themselves
   // flagged as undroppable (Edwin Amulet, Boo etc.)
-  PATCH_IF (VARIABLE_IS_SET $joinable_npcs("%SOURCE_RES%")) BEGIN
-    FOR (index = 0 ; index < itm_num ; ++index) BEGIN // searches through items
-      READ_ASCII (itm_off + (0x14 * index)) item
-      TO_LOWER item
+  // FIXME: Maybe allow this as an option, but I think for now lets comment it out
+  // It's nice to get rid of OP gear on a joinable, but it means Dorn would be missing
+  // his sword, and Drizzt and friends would be missing gear.  Maybe even Hexxat and
+  // her coffin...
+  // PATCH_IF (VARIABLE_IS_SET $joinable_npcs("%SOURCE_RES%")) BEGIN
+  //   FOR (index = 0 ; index < itm_num ; ++index) BEGIN // searches through items
+  //     READ_ASCII (itm_off + (0x14 * index)) item
+  //     TO_LOWER item
 
-      PATCH_IF (RANDOM(1 100) <= %del_per_cre%) BEGIN
-        PATCH_IF (VARIABLE_IS_SET $enchanted_items("%item%")) BEGIN
-          READ_LONG (itm_off + (0x14 * index) + 0x10) itm_flags
-          PATCH_IF (0 = (itm_flags BAND BIT3)) BEGIN
-            WRITE_ASCII (itm_off + (0x14 * index)) "misc17" #8
-          END
-        END
-      END
-    END
-  END
+  //     PATCH_IF (RANDOM(1 100) <= %del_per_cre%) BEGIN
+  //       PATCH_IF (VARIABLE_IS_SET $enchanted_items("%item%")) BEGIN
+  //         READ_LONG (itm_off + (0x14 * index) + 0x10) itm_flags
+  //         PATCH_IF (0 = (itm_flags BAND BIT3)) BEGIN
+  //           WRITE_ASCII (itm_off + (0x14 * index)) "misc17" #8
+  //         END
+  //       END
+  //     END
+  //   END
+  // END
 
   // If NOT an NPC, we'll just flag items as undroppable to simulate
   // them being deleted, without lowering the power level
